@@ -3,7 +3,6 @@ public class Pokemon {
 	//Attributes
 	private String name;
 	private String element;
-//	private int star; (Maybe, maybe not)
 	private int hp;
 	private int baseAtk;
 	private int baseDef;
@@ -29,10 +28,6 @@ public class Pokemon {
 	public String getElement() {
 		return element;
 	}
-
-//	public int getStar() {
-//		return star;
-//	}
 	
 	public int getHp() {
 		return hp;
