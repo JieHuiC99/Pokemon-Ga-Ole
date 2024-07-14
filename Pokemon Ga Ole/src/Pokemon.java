@@ -54,6 +54,9 @@ public class Pokemon {
 	}
 	
 	//Other methods
+	public void AttackVal(int atkVal, Pokemon enemyP) {
+		
+	}
 
 	//toString
 	@Override
