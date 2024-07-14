@@ -30,14 +30,22 @@ public class Displayer {
 	}
 	
 	public void PrintDisk(Pokemon p) {
+		String currStatus = null;
+		p.checkStatus();
+		if(p.getStatus() == true) {
+			currStatus = "ALIVE";
+		}else if(p.getStatus() == false) {
+			currStatus = "DEAD";
+		}
 		System.out.println("--------------------");
-		System.out.printf ("|    %-10s    |\n",p.GetName());
+		System.out.printf ("|    %-10s    |\n",p.getName());
 		System.out.println("--------------------");
-		System.out.printf ("|Star    : %-8d|\n",p.GetStar());
-		System.out.printf ("|HP      : %-8d|\n",p.GetHp());
-		System.out.printf ("|Attack  : %-8d|\n",p.GetBaseAtk());
-		System.out.printf ("|Defense : %-8d|\n",p.GetBaseDef());
-		System.out.printf ("|Element : %-8s|\n",p.GetElement());
+		System.out.printf ("|Status  : %-8s|\n", currStatus);
+		System.out.println("--------------------");
+		System.out.printf ("|HP      : %-8d|\n",p.getHp());
+		System.out.printf ("|Attack  : %-8d|\n",p.getBaseAtk());
+		System.out.printf ("|Defense : %-8d|\n",p.getBaseDef());
+		System.out.printf ("|Element : %-8s|\n",p.getElement());
 		System.out.println("--------------------");
 		
 	}
