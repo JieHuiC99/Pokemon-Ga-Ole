@@ -1,7 +1,7 @@
 public class PokeBall {
-    public static final int POKE = 2;
-    public static final int GREAT = 4;
-    public static final int ULTRA = 6;
+    public final static int POKE = 2;
+    public final static int GREAT = 4;
+    public final static int ULTRA = 6;
     
     private String type;
     private int chance;
