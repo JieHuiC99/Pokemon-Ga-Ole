@@ -16,6 +16,7 @@ public class PokeMain {
 		Pokemon enemyP = new WaterPokemon("Squirtle", "Water", 10000, 10000, 1000);
 		eInventory.add(enemyP);
 		
+		
 		boolean running = true;
 		
 		

@@ -1,15 +1,14 @@
-
 public class Pokemon {
 	//Attributes
 	private String name;
 	private String element;
-//	private int star; (Maybe, maybe not)
 	private int hp;
 	private int baseAtk;
 	private int baseDef;
 	public final static float SUPER_EFFECTIVE = 2f;
 	public final static float NOT_VERY_EFFECTIVE = 1.5f;
 	public final static float NORMAL = 1f;
+	private Pokemon enemyP;
 	
 	
 	//Constructor
@@ -29,10 +28,6 @@ public class Pokemon {
 	public String getElement() {
 		return element;
 	}
-
-//	public int getStar() {
-//		return star;
-//	}
 	
 	public int getHp() {
 		return hp;
@@ -49,6 +44,16 @@ public class Pokemon {
 	public int getBaseDef() {
 		return baseDef;
 	}
+	
+	public Pokemon getEnemyP() {
+		return enemyP;
+	}
+
+	public void setEnemyP(Pokemon enemyP) {
+		this.enemyP = enemyP;
+	}
+	
+	//Other methods
 
 	//toString
 	@Override

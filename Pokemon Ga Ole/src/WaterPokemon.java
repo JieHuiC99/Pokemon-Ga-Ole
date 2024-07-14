@@ -1,32 +1,47 @@
 
 public class WaterPokemon extends Pokemon {
 
-	int damage, atkVal;
-	double rate; 
+	public int damage, atkVal;
+	public static float rate; 
+	private Pokemon enemyP;
 	
-	public WaterPokemon(String name, String element, int hp, int baseAtk, 
-			int baseDef) {
-		super(name, element, hp, baseAtk, baseDef);
-		element = "WATER";
+	public WaterPokemon(String name, String element, int hp, int baseAtk, int baseDef) {
+		super(name, "WATER", hp, baseAtk, baseDef);
 		}
 	
-	if(enemyP instanceof FirePokemon) {
-		rate = SUPER_EFFECTIVE;
+	public Pokemon getEnemyP() {
+		return enemyP;
 	}
-	else if(enemyP instanceof ElectricPokemon) {
-		rate = NOT_VERY_EFFECTIVE;
-	}
-	else {
-		rate = NORMAL;
+
+	//Override setEnemyP for WaterPokemon
+	public void setEnemyP(Pokemon enemyP) {
+		super.setEnemyP(enemyP);
+		this.enemyP = enemyP;
+		updateRate();
 	}
 	
-	public int getDamage(int atkVal, double rate) {
+	
+	//Element effectiveness
+	private void updateRate() {
+		if(enemyP instanceof FirePokemon) {
+			rate = SUPER_EFFECTIVE;
+	}
+		else if(enemyP instanceof WaterPokemon) {
+			rate = NOT_VERY_EFFECTIVE;
+	}
+		else {
+			rate = NORMAL;
+	}}
+	
+	//Calculate attack damage
+	public int getDamage(int atkVal, float rate) {
 		int atkDmg;
-		atkDmg = (atkVal + getBaseAtk()) * rate) - enemyP.getBaseDef(); ENEMY POKEMON
+		atkDmg = (int)(((atkVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
 		return atkDmg;
 	}
-	//@Override
-	public void AttackVal2(int atkVal, Pokemon enemyP) {
+	
+	//Calculate enemy's HP after attack 
+	public void AttackVal(int atkVal, Pokemon enemyP) {
 		if (enemyP instanceof FirePokemon) {			
 		    enemyP.setHp(enemyP.getHp() - getDamage(atkVal, SUPER_EFFECTIVE));
 		}
@@ -39,6 +54,4 @@ public class WaterPokemon extends Pokemon {
 		}
 	}
 	
-	
-}
 }
