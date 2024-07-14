@@ -34,23 +34,29 @@ public class WaterPokemon extends Pokemon {
 	}}
 	
 	//Calculate attack damage
-	public int getDamage(int atkVal, float rate) {
+//	public int getDamage(int atkVal, float rate) {
+//		int atkDmg;
+//		atkDmg = (int)(((atkVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
+//		return atkDmg;
+//	}
+	
+	public int getDamage(int atkVal, float rate, Pokemon enemyP) {
 		int atkDmg;
-		atkDmg = (int)(((atkVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
+		atkDmg = (int)(((atkVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
 		return atkDmg;
 	}
 	
 	//Calculate enemy's HP after attack 
 	public void AttackVal(int atkVal, Pokemon enemyP) {
 		if (enemyP instanceof FirePokemon) {			
-		    enemyP.setHp(enemyP.getHp() - getDamage(atkVal, SUPER_EFFECTIVE));
+		    enemyP.setHp(enemyP.getHp() - getDamage(atkVal, SUPER_EFFECTIVE, enemyP));
 		}
 		else if (enemyP instanceof ElectricPokemon){
-			enemyP.setHp(enemyP.getHp() - getDamage(atkVal, NORMAL));
+			enemyP.setHp(enemyP.getHp() - getDamage(atkVal, NORMAL, enemyP));
 				
 		}
 		else if (enemyP instanceof WaterPokemon){
-			enemyP.setHp(enemyP.getHp() - getDamage(atkVal, NOT_VERY_EFFECTIVE));					
+			enemyP.setHp(enemyP.getHp() - getDamage(atkVal, NOT_VERY_EFFECTIVE, enemyP));					
 		}
 	}
 	
