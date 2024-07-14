@@ -1,3 +1,4 @@
+
 public class Pokemon {
 	//Attributes
 	private String name;
@@ -5,19 +6,20 @@ public class Pokemon {
 	private int hp;
 	private int baseAtk;
 	private int baseDef;
+	private boolean status;
 	public final static float SUPER_EFFECTIVE = 2f;
 	public final static float NOT_VERY_EFFECTIVE = 1.5f;
 	public final static float NORMAL = 1f;
-	private Pokemon enemyP;
 	
 	
 	//Constructor
-	public Pokemon(String name, String element, int hp, int baseAtk, int baseDef) {
+	public Pokemon(String name, String element, int hp, int baseAtk, int baseDef, boolean status) {
 		this.name = name;
 		this.element = element;
 		this.hp = hp;
 		this.baseAtk = baseAtk;
 		this.baseDef = baseDef;
+		this.status = true;
 	}
 
 	//Setter & getters
@@ -40,24 +42,28 @@ public class Pokemon {
 		return baseAtk;
 	}
 
-
 	public int getBaseDef() {
 		return baseDef;
 	}
-	
-	public Pokemon getEnemyP() {
-		return enemyP;
+
+	public boolean isStatus() { //getStatus method
+		return status;
 	}
 
-	public void setEnemyP(Pokemon enemyP) {
-		this.enemyP = enemyP;
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 	
 	//Other methods
-	public void AttackVal(int atkVal, Pokemon enemyP) {
-		
+	public void checkStatus() {
+		if (this.hp > 0) {
+			status = true;
+		}
+		else {setHp(0);
+			status = false;
+		}
 	}
-
+	
 	//toString
 	@Override
 	public String toString() {
