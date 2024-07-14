@@ -46,7 +46,7 @@ public class Pokemon {
 		return baseDef;
 	}
 
-	public boolean isStatus() { //getStatus method
+	public boolean getStatus() { //getStatus method
 		return status;
 	}
 
