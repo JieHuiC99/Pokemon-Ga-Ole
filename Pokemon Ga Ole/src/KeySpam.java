@@ -56,10 +56,7 @@ public class KeySpam extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent e) {
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            KeySpam counter = new KeySpam();
-            counter.setVisible(true);
-        });
-    }
+    // just put this in your main part
+//    KeySpam counter = new KeySpam();
+//    counter.setVisible(true);
 }
