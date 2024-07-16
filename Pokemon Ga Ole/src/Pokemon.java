@@ -13,7 +13,7 @@ public class Pokemon {
 	
 	
 	//Constructor
-	public Pokemon(String name, String element, int hp, int baseAtk, int baseDef, boolean status) {
+	public Pokemon(String name, String element, int hp, int baseAtk, int baseDef) {
 		this.name = name;
 		this.element = element;
 		this.hp = hp;
