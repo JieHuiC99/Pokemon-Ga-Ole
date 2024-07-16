@@ -50,7 +50,11 @@ public class KeySpam extends JFrame implements KeyListener {
         }
     }
 
-    public void keyReleased(KeyEvent e) {
+	public void setKeyVal(int keyVal) {
+		this.keyVal = keyVal;
+	}
+
+	public void keyReleased(KeyEvent e) {
     }
 
     public void keyTyped(KeyEvent e) {
