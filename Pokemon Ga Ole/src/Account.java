@@ -12,12 +12,12 @@ public class Account {
 //		this.pass = pass;
 //	}
 	
-	public Account() {
+	public Account(int num) {
 		p = new ArrayList<Pokemon>();
-		Pokemon p1 = new Pikachu(10000,10000,10000,4);
-		Pokemon p2 = new Charmander(10000,10000,10000,4);
-		p.add(p1);
-		p.add(p2);
+//		Pokemon p1 = new Pikachu(10000,10000,10000,4);
+//		Pokemon p2 = new Charmander(10000,10000,10000,4);
+//		p.add(p1);
+//		p.add(p2);
 	}
 	
 	public boolean IsLoginValid(int playerID, String pass) {
