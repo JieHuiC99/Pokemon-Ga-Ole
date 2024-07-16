@@ -63,8 +63,8 @@ public class Pokemon {
 			status = false;
 		}
 	}
-
-	public void attackVal(int atkVal, Pokemon enemyP) {
+	
+	public void attackVal(int keyVal, Pokemon enemyP) {
 		
 	}
 	
