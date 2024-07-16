@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeySpam extends JFrame implements KeyListener {
-    private int keyPressCount = 0;
+    private int keyVal = 0;
     private JLabel label;
     private Timer countdownTimer;
     private boolean counting = false;
@@ -30,7 +30,7 @@ public class KeySpam extends JFrame implements KeyListener {
                     label.setText("Counting... " + timeLeft + " seconds left");
                 } else {
                     countdownTimer.stop();
-                    label.setText("Key Press Count: " + keyPressCount);
+                    label.setText("Key Press Count: " + keyVal);
                     removeKeyListener(KeySpam.this);
                 }
             }
@@ -40,13 +40,13 @@ public class KeySpam extends JFrame implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_Q) {
         	if (!counting) {
-                keyPressCount = 0;
+                keyVal = 0;
                 timeLeft = 5;
                 countdownTimer.start();
                 label.setText("Counting... 5 seconds left");
                 counting = true;
             }
-            keyPressCount++;
+            keyVal++;
         }
     }
 
