@@ -63,6 +63,10 @@ public class Pokemon {
 			status = false;
 		}
 	}
+
+	public void attackVal(int atkVal, Pokemon enemyP) {
+		
+	}
 	
 	//toString
 	@Override
