@@ -10,6 +10,7 @@ public class Pokemon {
 	public final static float SUPER_EFFECTIVE = 2f;
 	public final static float NOT_VERY_EFFECTIVE = 1.5f;
 	public final static float NORMAL = 1f;
+	private boolean isFlipped;
 	
 	
 	//Constructor
@@ -20,6 +21,7 @@ public class Pokemon {
 		this.baseAtk = baseAtk;
 		this.baseDef = baseDef;
 		this.status = true;
+		this.isFlipped = false;
 	}
 
 	//Setter & getters
@@ -62,6 +64,14 @@ public class Pokemon {
 		else {setHp(0);
 			status = false;
 		}
+	}
+	
+	public boolean getIsFlipped() {
+		return this.isFlipped;
+	}
+	
+	public void setIsFlipped(boolean flip) {
+		this.isFlipped = flip;
 	}
 	
 	public void attackVal(int keyVal, Pokemon enemyP) {
