@@ -19,4 +19,11 @@ public class PokeBall {
     public String getType() {
         return type;
     }
+    
+    public String toString() {
+    	return String.format("======================\n"
+    					   + "|Type   : %-10s |\n"
+    					   + "|Chance : %-10d |\n"
+    					   + "======================", this.type, this.chance);
+    }
 }
