@@ -13,14 +13,6 @@ public class ElectricPokemon extends Pokemon {
 		return enemyP;
 	}
 
-	//Override setEnemyP for ElectricPokemon
-//	public void setEnemyP(Pokemon enemyP) {
-//		super.setEnemyP(enemyP);
-//		this.enemyP = enemyP;
-//		updateRate();
-//	}
-//	
-	
 	//Element effectiveness
 	private void updateRate() {
 		if(enemyP instanceof WaterPokemon) {
@@ -34,12 +26,6 @@ public class ElectricPokemon extends Pokemon {
 	}}
 	
 	//Calculate attack damage
-//	public int getDamage(int keyVal, float rate) {
-//		int atkDmg;
-//		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
-//		return atkDmg;
-//	}
-	
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());

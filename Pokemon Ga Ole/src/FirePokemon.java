@@ -6,20 +6,13 @@ public class FirePokemon extends Pokemon {
 	private Pokemon enemyP;
 	
 	public FirePokemon(String name, String element, int hp, int baseAtk, int baseDef) {
-		super(name, "WATER", hp, baseAtk, baseDef);
+		super(name, "FIRE", hp, baseAtk, baseDef);
 		}
 	
 	public Pokemon getEnemyP() {
 		return enemyP;
 	}
 
-	//Override setEnemyP for FirePokemon
-//	public void setEnemyP(Pokemon enemyP) {
-//		super.setEnemyP(enemyP);
-//		this.enemyP = enemyP;
-//		updateRate();
-//	}
-	
 	
 	//Element effectiveness
 	private void updateRate() {
@@ -34,12 +27,6 @@ public class FirePokemon extends Pokemon {
 	}}
 	
 	//Calculate attack damage
-//	public int getDamage(int keyVal, float rate) {
-//		int atkDmg;
-//		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
-//		return atkDmg;
-//	}
-	
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
