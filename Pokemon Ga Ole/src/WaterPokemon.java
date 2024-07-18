@@ -12,6 +12,13 @@ public class WaterPokemon extends Pokemon {
 	public Pokemon getEnemyP() {
 		return enemyP;
 	}
+
+	//Override setEnemyP for WaterPokemon
+//	public void setEnemyP(Pokemon enemyP) {
+//		super.setEnemyP(enemyP);
+//		this.enemyP = enemyP;
+//		updateRate();
+//	}
 	
 	
 	//Element effectiveness
@@ -27,6 +34,12 @@ public class WaterPokemon extends Pokemon {
 	}}
 	
 	//Calculate attack damage
+//	public int getDamage(int keyVal, float rate) {
+//		int atkDmg;
+//		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
+//		return atkDmg;
+//	}
+	
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
