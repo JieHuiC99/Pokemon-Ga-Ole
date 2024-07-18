@@ -19,8 +19,25 @@ public class Displayer {
 			System.out.println("  -------------");
 			System.out.print((i+1) + " ");
 			for(int k = 0; k < grid[0].length; k++) {
-				System.out.print("| ? ");
-			}
+				if( grid[i][k] == null ) {
+					System.out.print("|{?}");
+				}else {
+					if( grid[i][k].getIsFlipped() == false) {
+						System.out.print("|{?}");
+					}else {
+						System.out.print("| ! ");
+					}
+				}
+//				if( grid[i][k].getIsFlipped() == false) {
+//					System.out.print("|{?}");
+//				}else {
+//					if( grid[i][k] == null ) {
+//						System.out.print("| x ");
+//					}else {
+//						System.out.print("| ★ ");
+//					}
+//				}				
+			} //★
 			System.out.print("|" + "\n"); 
 			
 		}
