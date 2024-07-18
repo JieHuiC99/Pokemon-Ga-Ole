@@ -38,7 +38,7 @@ public class KeySpam extends JFrame implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_Q) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
         	if (!counting) {
                 keyVal = 0;
                 timeLeft = 5;
