@@ -2,9 +2,98 @@ import java.util.*;
 
 public class PokeMain {
 	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);		
 		
-		PokeGame g1 = new PokeGame();
-		g1.start();
+		boolean running = true;
+		
+		PokeGame p = new PokeGame();
+		ArrayList<Pokemon> pp = new ArrayList<Pokemon>();
+		Pokemon p1 = new WaterPokemon("a", "a", 1, 1, 1);
+		Pokemon p2 = new WaterPokemon("a", "a", 1, 1, 1);
+		Pokemon p3 = new WaterPokemon("a", "a", 1, 1, 1);
+		Collections.addAll(pp, p1,p2,p3);
+		
+		p.start();
+		
+		
+		
+//		p.Catch(pp);
+//		
+		p.DisplayAllPlayerDisk(p.a[0]);
+//		
+//		int i = 0;
+//		while(i < 3) {
+//			try {
+//				System.out.println("enter message: ");
+//				input.nextInt();
+//				if( i == 3 ) {
+//					running = false;
+//				}
+//				i++;
+//			}catch(Exception e) {
+//				System.out.println(e.getMessage());
+//				input.next();
+//			}
+//		}
+		
+//		while( running) {
+//			for( int i = 0; i < 3; i++) {
+//				try {
+//					System.out.println("enter message: ");
+//					input.nextInt();
+//					if( i == 3 ) {
+//						running = false;
+//					}
+//				}catch(Exception e) {
+//					System.out.println(e.getMessage());
+//					input.next();
+//				}
+//			}
+//		}
+		
+//		for( int i = 0; i < 3; i++) {
+//			while(i < 3) {
+//				try {
+//					System.out.println("enter message: ");
+//					input.nextInt();
+//					if( i == 3 ) {
+//						running = false;
+//					}
+//					
+//				}catch(Exception e) {
+//					System.out.println(e.getMessage());
+//					input.next();
+//				}
+//			}
+//		}
+		
+		
+//		while(running) {
+//			try {
+//				for( int i = 0; i < 3; i ++ ) {
+//					System.out.println("enter message: ");
+//					input.nextInt();
+////					if( i == 3) {
+////						running = false;
+////					}
+//				}
+//				running = false;
+//			}catch(Exception e) {
+//				System.out.println(e.getMessage());
+//				input.next();
+//			}
+//		}
+		
+		
+//		KeySpam counter = new KeySpam();
+//		counter.setVisible(true);
+//		input.nextLine();
+//		System.out.print(counter.getKeyVal());
+//		
+		
+		
+//		PokeGame g1 = new PokeGame();
+//		g1.start();
 		
 //		Account player = new Account(0);
 //		Account npc = new Account(1);
