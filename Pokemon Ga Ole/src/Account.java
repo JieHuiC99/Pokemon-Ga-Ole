@@ -12,7 +12,8 @@ public class Account {
 	
 	//player's items 
 	private ArrayList<Pokemon> pInventory;
-	private ArrayList<Pokemon> onField;
+	private ArrayList<Pokemon> pOnField;
+	private ArrayList<Pokemon> pDead;
 	private int score;
 	PokeBall[] Pokeball;
 	
@@ -32,7 +33,7 @@ public class Account {
 		}
 		
 		pInventory = new ArrayList<Pokemon>();
-		onField = new ArrayList<Pokemon>();
+		pOnField = new ArrayList<Pokemon>();
 		grid = new Pokemon[3][3];
 		Pokeball = new PokeBall[3];
 		Pokeball[0] = new PokePoke(2, "Poke Ball");
@@ -84,24 +85,6 @@ public class Account {
 		}
 	}
 	
-	public void addPoke( Pokemon poke ) {
-		this.pInventory.add(poke);
-	}
-	
-	//overloading
-	public void addPoke(Pokemon[][] poke) {
-		
-	}
-	
-	//overloading
-	public void addPoke(ArrayList<Pokemon> poke) {
-		
-	}
-	
-	public PokeBall[] getPokeBall() {
-		return this.Pokeball;
-	}
-	
 	public boolean IsLoginValid(int playerID, String pass) {
 		if( playerID == accountPlayerID && pass.equals(accountPass)) {
 			return true;
@@ -109,8 +92,73 @@ public class Account {
 		return false;
 	}
 	
-	public ArrayList<Pokemon> GetDisk() {
+	//add methods==================================================================
+	public void addPoke( Pokemon poke ) {
+		this.pInventory.add(poke);
+	}
+	
+	//overloading
+	public void addPoke(Pokemon[] poke) {
+		for(int i = 0; i < poke.length; i++) {
+			this.pInventory.add(poke[i]);
+		}
+	}
+	
+	//overloading
+	public void addPoke(ArrayList<Pokemon> poke) {
+		for(int i = 0; i < poke.size(); i++) {
+			this.pInventory.add(poke.get(i));
+		}
+	}
+	
+	public void addOnFieldPoke(Pokemon poke) {
+		this.pOnField.add(poke);
+	}
+	
+	public void addDeadPoke(Pokemon poke) {
+		this.pDead.add(poke);
+	}
+	
+	//get methods =====================================================================================
+	public PokeBall[] getPokeBall() {
+		return this.Pokeball;
+	}
+	
+	public ArrayList<Pokemon> GetInventoryDisk() {
 		return this.pInventory;
+	}
+	
+	public ArrayList<Pokemon> GetOnFieldDisk(){
+		return this.pOnField;
+	}
+	
+	public ArrayList<Pokemon> GetDeadDisk(){
+		return this.pDead;
+	}
+	
+	//delete methods===================================================================================
+	public void deleteOnFieldP( int index ) {
+		this.pOnField.remove(index);
+	}
+	
+	public void deleteInventoryP(Pokemon p) {
+		 this.pInventory.remove(p);
+	}
+	
+	public void attackVal(int keyVal, Pokemon atkP, Pokemon enemyP, Account enemy) {
+		atkP.attackVal(keyVal, enemyP);
+		
+//		for( int i = enemy.GetOnFieldDisk().size()-1; i >= 0; i--) {
+//			enemy.GetOnFieldDisk().get(i).checkStatus();
+//			if( enemy.GetOnFieldDisk().get(i).getStatus() == false) {
+//				enemy.deleteOnFieldP(enemy.GetOnFieldDisk().get(i));
+//			}
+//		}
+		
+		enemyP.checkStatus();
+//		if(enemyP.getStatus() == false) {
+//			enemy.deleteOnFieldP(enemyP);
+//		}
 	}
 	
 }
