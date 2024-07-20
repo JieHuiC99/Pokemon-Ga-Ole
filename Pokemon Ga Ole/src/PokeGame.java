@@ -131,18 +131,21 @@ public class PokeGame {
 				case 1:
 					System.out.println("Ocean - Squirtle, Piplup, Psyduck");
 					pReturn = Ocean;
+					pokemonGUI("Ocean", Ocean);
 					locationLoop = false;
 					break;
 					
 				case 2:
 					System.out.println("Volcano - Charmander, Vulpix, Ponyta");
 					pReturn = Volcano;
+					pokemonGUI("Volcano", Volcano);
 					locationLoop = false;
 					break;
 					
 				case 3:
 					System.out.println("Forest - Pikachu, Voltorb, Magnemite");
 					pReturn = Forest;
+					pokemonGUI("Forest", Forest);
 					locationLoop = false;
 					break;
 				default:
@@ -157,7 +160,32 @@ public class PokeGame {
 		return pReturn;
 
 	}
+
+	// GUI for Pokemon
+	private void setTextPosition(JLabel label, int horizontalAlignment, int verticalAlignment) {
+	    label.setHorizontalTextPosition(horizontalAlignment);
+	    label.setVerticalTextPosition(verticalAlignment);
+	}
 	
+	public void pokemonGUI(String title, ArrayList<Pokemon> pokemons)	{
+		JFrame frame = new JFrame("Pokemon - " + title);
+        frame.setSize(650, 275);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+        for (Pokemon pokemon : pokemons) {
+            ImageIcon image = new ImageIcon(new ImageIcon(PokeGame.class.getResource(pokemon.getName() + ".png")).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+            JLabel label = new JLabel(image);
+            label.setText(pokemon.getName());
+            setTextPosition(label, JLabel.CENTER, JLabel.BOTTOM);
+            frame.add(label);
+        }
+        
+        frame.setVisible(true);
+	}
+
 	public void Catch(ArrayList<Pokemon> fallenPokemon) {
 
 		a[0].placePokeInGrid(fallenPokemon);  //place pokemon in grid to catch 
