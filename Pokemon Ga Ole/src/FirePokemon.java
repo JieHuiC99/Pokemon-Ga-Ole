@@ -6,7 +6,7 @@ public class FirePokemon extends Pokemon {
 	private Pokemon enemyP;
 	
 	public FirePokemon(String name, String element, int hp, int baseAtk, int baseDef) {
-		super(name, "WATER", hp, baseAtk, baseDef);
+		super(name, "FIRE", hp, baseAtk, baseDef);
 		}
 	
 	public Pokemon getEnemyP() {
@@ -43,6 +43,9 @@ public class FirePokemon extends Pokemon {
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
+		if(atkDmg < 0) {
+			atkDmg = 0;
+		}
 		return atkDmg;
 	}
 	
