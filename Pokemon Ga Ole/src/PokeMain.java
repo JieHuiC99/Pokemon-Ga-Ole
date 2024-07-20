@@ -19,7 +19,7 @@ public class PokeMain {
 		
 //		p.Catch(pp);
 //		
-		p.DisplayAllPlayerDisk(p.a[0]);
+		//p.DisplayAllPlayerDisk(p.a[0]);
 //		
 //		int i = 0;
 //		while(i < 3) {
