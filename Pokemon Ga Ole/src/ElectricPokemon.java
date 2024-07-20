@@ -43,6 +43,9 @@ public class ElectricPokemon extends Pokemon {
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
+		if(atkDmg < 0) {
+			atkDmg = 0;
+		}
 		return atkDmg;
 	}
 	
