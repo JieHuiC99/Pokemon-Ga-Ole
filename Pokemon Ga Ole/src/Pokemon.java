@@ -61,7 +61,8 @@ public class Pokemon {
 		if (this.hp > 0) {
 			status = true;
 		}
-		else {setHp(0);
+		else {
+			setHp(0);
 			status = false;
 		}
 	}
