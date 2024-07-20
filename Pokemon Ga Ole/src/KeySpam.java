@@ -30,15 +30,17 @@ public class KeySpam extends JFrame implements KeyListener {
                     label.setText("Counting... " + timeLeft + " seconds left");
                 } else {
                     countdownTimer.stop();
-                    label.setText("Key Press Count: " + keyVal);
+                    label.setText("Attack Value: " + keyVal);
                     removeKeyListener(KeySpam.this);
+                    setKeyVal(keyVal);
+                    dispose();
                 }
             }
         });
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode() == KeyEvent.VK_Q) {
         	if (!counting) {
                 keyVal = 0;
                 timeLeft = 5;
@@ -52,6 +54,10 @@ public class KeySpam extends JFrame implements KeyListener {
 
 	public void setKeyVal(int keyVal) {
 		this.keyVal = keyVal;
+	}
+	
+	public int getKeyVal() {
+		return this.keyVal;
 	}
 
 	public void keyReleased(KeyEvent e) {
