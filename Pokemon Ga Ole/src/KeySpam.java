@@ -18,7 +18,7 @@ public class KeySpam extends JFrame implements KeyListener {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        label = new JLabel("Press Space bar to start counting...", SwingConstants.CENTER);
+        label = new JLabel("Press 'Q' to start counting...", SwingConstants.CENTER);
         add(label);
 
         addKeyListener(this);
@@ -34,13 +34,13 @@ public class KeySpam extends JFrame implements KeyListener {
                     removeKeyListener(KeySpam.this);
                     setKeyVal(keyVal);
                     dispose();
-                }
+                }	
             }
         });
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode() == KeyEvent.VK_Q) {
         	if (!counting) {
                 keyVal = 0;
                 timeLeft = 5;

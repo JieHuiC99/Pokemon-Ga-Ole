@@ -19,11 +19,6 @@ public class Account {
 	
 	Pokemon[][] grid;
 	
-//	public Account(int playerID, String pass) {
-//		this.playerID = playerID;
-//		this.pass = pass;
-//	}
-	
 	public Account(int num) {
 		
 		if(num == 0) {
@@ -39,17 +34,19 @@ public class Account {
 		Pokeball[0] = new PokePoke(2, "Poke Ball");
 		Pokeball[1] = new PokeGreat(4, "Great Ball");
 		Pokeball[2] = new PokeUltra(6, "Ultra Ball");
-		
-		
-		
-//		Pokemon p1 = new Pikachu(10000,10000,10000,4);
-//		Pokemon p2 = new Charmander(10000,10000,10000,4);
-//		p.add(p1);
-//		p.add(p2);
+		score = 0;
 	}
 	
 	public Pokemon[][] getGrid() {
 		return this.grid;
+	}
+	
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public int getScore() {
+		return this.score;
 	}
 	
 	public void placePokeInGrid(ArrayList<Pokemon> fallenPokemon) {
@@ -122,6 +119,10 @@ public class Account {
 	//get methods =====================================================================================
 	public PokeBall[] getPokeBall() {
 		return this.Pokeball;
+	}
+	
+	public Pokemon GetOnFieldP(int index) {
+		return this.pOnField.get(index);
 	}
 	
 	public ArrayList<Pokemon> GetInventoryDisk() {

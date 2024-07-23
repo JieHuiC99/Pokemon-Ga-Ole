@@ -11,6 +11,7 @@ public class Pokemon {
 	public final static float NOT_VERY_EFFECTIVE = 1.5f;
 	public final static float NORMAL = 1f;
 	private boolean isFlipped;
+	private int damageDealt;
 	
 	
 	//Constructor
@@ -54,6 +55,14 @@ public class Pokemon {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+	
+	public void setDamageDealt(int dmg) {
+		this.damageDealt = dmg;
+	}
+	
+	public int getDamageDealt() {
+		return this.damageDealt;
 	}
 	
 	//Other methods

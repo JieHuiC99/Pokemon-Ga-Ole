@@ -1,8 +1,8 @@
 
 public class WaterPokemon extends Pokemon {
 
-	public int damage, keyVal;
-	public static float rate; 
+//	private int keyVal;
+//	private static float rate; 
 	private Pokemon enemyP;
 	
 	public WaterPokemon(String name, String element, int hp, int baseAtk, int baseDef) {
@@ -22,16 +22,16 @@ public class WaterPokemon extends Pokemon {
 	
 	
 	//Element effectiveness
-	private void updateRate() {
-		if(enemyP instanceof FirePokemon) {
-			rate = SUPER_EFFECTIVE;
-	}
-		else if(enemyP instanceof WaterPokemon) {
-			rate = NOT_VERY_EFFECTIVE;
-	}
-		else {
-			rate = NORMAL;
-	}}
+//	private void updateRate() {
+//		if(enemyP instanceof FirePokemon) {
+//			rate = SUPER_EFFECTIVE;
+//	}
+//		else if(enemyP instanceof WaterPokemon) {
+//			rate = NOT_VERY_EFFECTIVE;
+//	}
+//		else {
+//			rate = NORMAL;
+//	}}
 	
 	//Calculate attack damage
 //	public int getDamage(int keyVal, float rate) {
@@ -40,12 +40,14 @@ public class WaterPokemon extends Pokemon {
 //		return atkDmg;
 //	}
 	
+	
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
 		if(atkDmg < 0) {
 			atkDmg = 0;
 		}
+		super.setDamageDealt(atkDmg);
 		return atkDmg;
 	}
 	

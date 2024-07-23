@@ -6,6 +6,7 @@ public class PokeMain {
 		
 		boolean running = true;
 		
+		
 		PokeGame p = new PokeGame();
 		ArrayList<Pokemon> pp = new ArrayList<Pokemon>();
 		Pokemon p1 = new WaterPokemon("a", "a", 1, 1, 1);

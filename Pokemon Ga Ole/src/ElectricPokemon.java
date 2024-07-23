@@ -46,6 +46,7 @@ public class ElectricPokemon extends Pokemon {
 		if(atkDmg < 0) {
 			atkDmg = 0;
 		}
+		super.setDamageDealt(atkDmg);
 		return atkDmg;
 	}
 	
