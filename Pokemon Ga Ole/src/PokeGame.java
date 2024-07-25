@@ -10,8 +10,13 @@ public class PokeGame {
 	Displayer d = new Displayer();
 	Scanner input = new Scanner(System.in);
 	Account currPlayer, enemyPlayer;
+	Database db = new Database();
+	
 	public final static int COMPUTER_MIN_ATK          = 30;
 	public final static int COMPUTER_MAX_ATK          = 50;
+	public final static int DEFAULT_HP                = 1000;
+	public final static int DEFAULT_ATK               = 200;
+	public final static int DEFAULT_DEF               = 50;
 	
 	public PokeGame() {
 		a = new Account[2];
@@ -19,20 +24,12 @@ public class PokeGame {
 		a[1] = new Account(1); //computer		
 	}
 	
+	   /* start the game */   
 	public void start() {
-		
-		//player's default pokemon
-		
-		
-//		Ocean.add(charmander);
-//		pokemonGUI("test",Ocean);
-		
-		
-		
-		boolean loginLoop = true, gameRunning = true;
-		
-		//login
-		while (loginLoop) {
+		//loop for login          battle              continue to battle
+		boolean loginLoop = true, gameRunning = true, optionLoop = true, winStatus;
+
+		while (loginLoop) {  //login
 			try {
 				int loginNum = d.PrintLogin(a[0], a[1]);
 				if( loginNum == 1 ) {
@@ -51,17 +48,48 @@ public class PokeGame {
 			}
 		}
 		
+		initializePokemon();
+		d.PrintCatch(a[0], a[1], d.PrintSelectLocation(a[0], a[1], Ocean, Forest, Volcano));//select location and catch 
+		d.PrintSelectPoke(a[0], a[1]);//select 2 pokemon to fight
+		
 		while(gameRunning) {
-			//select location and catch 
-			d.PrintCatch(a[0], a[1], d.PrintSelectLocation(a[0], a[1], Ocean, Forest, Volcano));
+			Battle();// battle
+			winStatus = CheckWinner();
+			if(winStatus == true) {
+				System.out.println("You are the winner!");
+				System.out.println("Time to catch enemy's fallen pokemon!");
+				a[0].resetFlip();
+				d.PrintCatch(a[0],  a[1], a[1].GetDeadDisk());
+				if(a[0].getCaughtP()!=null) {
+					a[0].resetPoke(a[0].getCaughtP());
+					d.PrintDisk(a[0].getCaughtP());
+				}
+			}else {
+				System.out.println("You have lost!");
+				a[0].setCaughtP(null);
+			}
 			
-			//select 2 pokemon to fight 
-			d.PrintSelectPoke(a[0], a[1]);
+			d.PrintManageScores(a, a[0].getScore(), db); //manage scores 
+			optionLoop = true;
+			while(optionLoop) {
+				System.out.println("1. Continue to battle ");
+				System.out.println("2. Exit");
+				System.out.println("NOTE: If you continue and you won you will continue with catched fallen pokemon, otherwise default pokemons!");
+				System.out.println("      Previous catched pokemon will be removed!");
+				System.out.print("Your option: ");
+				int op = input.nextInt();
+				if(op == 1) {
+					manageContinueBattle();
+					initializePokemon();
+					d.PrintSelectPoke(a[0], a[1]);//select 2 pokemon to fight
+					optionLoop = false;
+				}else if(op == 2) {
+					System.out.println("Thank you for playing!");
+					gameRunning = false;
+					optionLoop = false;
+				}
+			}
 			
-			// battle
-			Battle();
-			
-			System.out.println("Continue to battle");
 		}
 		
 		
@@ -69,8 +97,10 @@ public class PokeGame {
 		
 	}  //===================================================================================================================
 	
-	
-		
+	   /* Battle
+	    * Randomize to decide if player or computer start first
+	    * When player's turn, gui will pop up for player to spam a key
+	    * When computer's turn, computer will randomize a   */   
 	public void Battle() {
 		int flip = (int)(Math.random() * 2)+1;
 		if(flip == 1) {
@@ -79,13 +109,11 @@ public class PokeGame {
 			setCurrPlayer(a[0], a[1]);
 		}
 		
-		while(IsGameRunning(currPlayer,enemyPlayer)) {
-			
+		while(IsBattle(currPlayer,enemyPlayer)) {
 			System.out.println("Your pokemon: ");
 			for( int k = 0; k < a[0].GetOnFieldDisk().size(); k++) {
 				d.PrintDisk(a[0].GetOnFieldDisk().get(k));
 			}
-			
 			System.out.println("Your opponent(s) pokemon: ");
 			for( int k = 0; k < a[1].GetOnFieldDisk().size(); k++) {
 				d.PrintDisk(a[1].GetOnFieldDisk().get(k));
@@ -102,7 +130,8 @@ public class PokeGame {
 						atkLoop = false;
 					}catch(Exception e) {
 						System.out.println("ERROR!: " + e.getMessage());
-						//input.next();
+						System.out.println("NOTE: If game doesnt continue key in anything and press enter!");
+						input.next();
 					}
 				}
 				
@@ -136,53 +165,100 @@ public class PokeGame {
 					}
 				}
 				
-				
-				//SwitchPlayer();
 			}else if(this.currPlayer == a[1]) {  //computer 
 
-					System.out.println("Enemy's turn to attack: ");
-					int enemyAtker = (int)(Math.random() * currPlayer.GetOnFieldDisk().size());
-					int enemyAtkVal = (int)(Math.random() * ((COMPUTER_MAX_ATK - COMPUTER_MIN_ATK) + 1) + COMPUTER_MIN_ATK);
-					System.out.println("Enemy's input damage: " + enemyAtkVal);
-					for(int i = 0; i < enemyPlayer.GetOnFieldDisk().size(); i++) {
-						currPlayer.attackVal(enemyAtkVal, currPlayer.GetOnFieldDisk().get(enemyAtker), enemyPlayer.GetOnFieldDisk().get(i), enemyPlayer);
-						System.out.println("Enemy's total damage on " + enemyPlayer.GetOnFieldDisk().get(i).getName() + 
-								": " + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
-						currPlayer.setScore(currPlayer.getScore() + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
-					}
-					System.out.println("Enemy current score: " + currPlayer.getScore());
-					int j = (enemyPlayer.GetOnFieldDisk().size()) -1;
+				System.out.println("Enemy's turn to attack: ");
+				int enemyAtker = (int)(Math.random() * currPlayer.GetOnFieldDisk().size());
+				int enemyAtkVal = (int)(Math.random() * ((COMPUTER_MAX_ATK - COMPUTER_MIN_ATK) + 1) + COMPUTER_MIN_ATK);
+				System.out.println("Enemy's input damage: " + enemyAtkVal);
+				for(int i = 0; i < enemyPlayer.GetOnFieldDisk().size(); i++) {
+					currPlayer.attackVal(enemyAtkVal, currPlayer.GetOnFieldDisk().get(enemyAtker), enemyPlayer.GetOnFieldDisk().get(i), enemyPlayer);
+					System.out.println("Enemy's total damage on " + enemyPlayer.GetOnFieldDisk().get(i).getName() + 
+							": " + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
+					currPlayer.setScore(currPlayer.getScore() + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
+				}
+				System.out.println("Enemy current score: " + currPlayer.getScore());
+				int j = (enemyPlayer.GetOnFieldDisk().size()) -1;
 					
-					while(j>=0) {
-						if(j<enemyPlayer.GetOnFieldDisk().size()){
-							if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
-								System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminaed!");
-								enemyPlayer.addDeadPoke(enemyPlayer.GetOnFieldDisk().get(j));  //add into dead poke for catching later
-								enemyPlayer.deleteOnFieldP(j);								
-								j = (enemyPlayer.GetOnFieldDisk().size()) -1;
-							}else {
-								j--;
-							}
+				while(j>=0) {
+					if(j<enemyPlayer.GetOnFieldDisk().size()){
+						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
+							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminaed!");
+							enemyPlayer.addDeadPoke(enemyPlayer.GetOnFieldDisk().get(j));  //add into dead poke for catching later
+							enemyPlayer.deleteOnFieldP(j);								
+							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
+						}else {
+							j--;
 						}
-						
 					}
-
-				
-				//SwitchPlayer();
+						
+				}
 			}
 			SwitchPlayer();
 		}
 		
 	}
 	
-	public int Attack(Pokemon p1, Account p2) {
+
+	
+	public void initializePokemon() {
+		
+		Pokemon squirtle = new WaterPokemon("Squirtle","WATER",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon piplup = new WaterPokemon("Piplup","WATER",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon psyduck = new WaterPokemon("Psyduck","WATER",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Ocean.add(squirtle);
+		Ocean.add(piplup);
+		Ocean.add(psyduck);
+		a[1].addPoke(Ocean);
+		
+		Pokemon ninetales = new FirePokemon("Ninetales","FIRE",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon vulpix = new FirePokemon("Vulpix", "FIRE", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon ponyta = new FirePokemon("Ponyta", "FIRE", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF); 
+		Volcano.add(ninetales);
+		Volcano.add(vulpix);
+		Volcano.add(ponyta);
+		a[1].addPoke(Volcano);
+		
+		Pokemon jolteon = new ElectricPokemon("Jolteon","ELECTRIC",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon voltorb = new ElectricPokemon("Voltorb","ELECTRIC",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon magnemite = new ElectricPokemon("Magnemite","ELECTRIC",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Forest.add(jolteon);
+		Forest.add(voltorb);
+		Forest.add(magnemite);
+		a[1].addPoke(Forest);
+	}
+	
+	   /* chosen pokemon attack all enemy pokemon 
+	    * If they do, update the arraylist and txt file 
+	    * @param p1 - attacker pokemon
+	    * @param p2 - enemy's player  */ 
+	public void manageContinueBattle() {
+		System.out.println(a[0].GetInventoryDisk().size());
+		for(int i = 0; i < a.length; i++) {
+			a[i].reset();
+		}
+		Pokemon charmander = new FirePokemon("Charmander", "Fire", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		a[0].addPoke(charmander);
+		a[0].addPoke(pikachu);
+		if(a[0].getCaughtP() != null) {
+			a[0].addPoke(a[0].getCaughtP());
+		}
+	}
+	
+	   /* chosen pokemon attack all enemy pokemon 
+	    * If they do, update the arraylist and txt file 
+	    * @param p1 - attacker pokemon
+	    * @param p2 - enemy's player  */   
+	public void Attack(Pokemon p1, Account p2) {
 		ArrayList<Pokemon> inventory = p2.GetInventoryDisk();
 		for( int i = 0; i < inventory.size(); i++) {
 			p1.attackVal(100,inventory.get(i));
 		}
-		return 0;
 	}
 	
+	   /* Displayer all player's pokemon in their inventory
+	    * @param a           - the account */   
 	public void DisplayAllPlayerDisk(Account a) {
 		ArrayList<Pokemon> inventory = a.GetInventoryDisk();
 		for( int i = 0; i < inventory.size(); i++) {
@@ -210,208 +286,19 @@ public class PokeGame {
 		this.enemyPlayer = enemyPlayer;
 	}
 	
-	public boolean IsGameRunning(Account currPlayer, Account enemyPlayer) {
+	public boolean IsBattle(Account currPlayer, Account enemyPlayer) {
 		if(currPlayer.GetOnFieldDisk().size() == 0 || enemyPlayer.GetOnFieldDisk().size() == 0) {
 			return false;
 		}
 		return true;
 	}
 	
+	public boolean CheckWinner() {
+		if( a[1].GetOnFieldDisk().size() == 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 }
-
-//public boolean login() {
-//return false;
-////Pokemon charmander = new FirePokemon("Charmander", "Fire", 1000,200,50);
-////Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", 1000,200,50);
-////a[0].addPoke(charmander);
-////a[0].addPoke(pikachu);
-//
-////System.out.println("1. Login");
-////System.out.println("2. Exit");
-////System.out.print("Option: ");
-////int option = input.nextInt();
-////
-////switch (option) {
-////    case 1: //login
-////        System.out.print("Enter PlayerID: ");
-////        int playerID = input.nextInt();    
-////        input.nextLine(); 
-////        System.out.print("Enter Password: ");
-////        String password = input.nextLine();
-////        
-////        if (a[0].IsLoginValid(playerID, password)) {  
-////            System.out.println("Successfully Logged In!");
-////            System.out.printf("You have %d default Pokemon in your inventory:\n", a[0].GetInventoryDisk().size());
-////            for (Pokemon pokemon : a[0].GetInventoryDisk()) {
-////                d.PrintDisk(pokemon);
-////            }
-////            return true;                            
-////        } else {  // login invalid
-////            System.out.println("Your ID or Password is invalid!");
-////            return false;
-////        }
-////        //break;
-////    
-////    case 2: // Exit
-////        System.out.println("Exiting the game...");
-////        return false;
-////
-////    default:
-////        System.out.println("Invalid option! Please select 1 or 2.");
-////        return false;
-////}
-//}
-
-//public ArrayList<Pokemon> SelectLocation(){
-//
-//ArrayList<Pokemon> pReturn = new ArrayList<Pokemon>();
-//
-//Pokemon squirtle = new WaterPokemon("Squirtle","WATER",1000,200,50);
-//Pokemon piplup = new WaterPokemon("Piplup","WATER",1000,200,50);
-//Pokemon psyduck = new WaterPokemon("Psyduck","WATER",1000,200,50);
-//Ocean.add(squirtle);
-//Ocean.add(piplup);
-//Ocean.add(psyduck);
-//a[1].addPoke(Ocean);
-//
-//Pokemon charmander = new FirePokemon("Charmander","FIRE",1000,200,50);
-//Pokemon vulpix = new FirePokemon("Vulpix", "FIRE", 1000,200,50);
-//Pokemon ponyta = new FirePokemon("Ponyta", "FIRE", 1000,200,50); 
-//Volcano.add(charmander);
-//Volcano.add(vulpix);
-//Volcano.add(ponyta);
-//a[1].addPoke(Volcano);
-//
-//Pokemon pikachu = new ElectricPokemon("Pikachu","ELECTRIC",1000,200,50);
-//Pokemon voltorb = new ElectricPokemon("Voltorb","ELECTRIC",1000,200,50);
-//Pokemon magnemite = new ElectricPokemon("Magnemite","ELECTRIC",1000,200,50);
-//Forest.add(pikachu);
-//Forest.add(voltorb);
-//Forest.add(magnemite);
-//a[1].addPoke(Forest);
-//
-//boolean locationLoop = true;
-//while(locationLoop) {
-//	try {
-//		System.out.println("Choose a location!");
-//		System.out.println("1. Ocean");
-//		System.out.println("2. Volcano");
-//		System.out.println("3. Forest");
-//		System.out.print("Option: ");
-//		int location = input.nextInt();
-//		
-//		switch(location) {
-//		case 1:
-//			System.out.println("Ocean - Squirtle, Piplup, Psyduck");
-//			pReturn = Ocean;
-//			locationLoop = false;
-//			break;
-//			
-//		case 2:
-//			System.out.println("Volcano - Charmander, Vulpix, Ponyta");
-//			pReturn = Volcano;
-//			locationLoop = false;
-//			break;
-//			
-//		case 3:
-//			System.out.println("Forest - Pikachu, Voltorb, Magnemite");
-//			pReturn = Forest;
-//			locationLoop = false;
-//			break;
-//		default:
-//			break;
-//		}
-//	}catch(Exception e) {
-//		System.out.println("akshdjksad");
-//		input.next();
-//	}
-//	
-//}
-//return pReturn;
-//
-//}
-
-//public void Catch(ArrayList<Pokemon> fallenPokemon) {
-//
-//a[0].placePokeInGrid(fallenPokemon);  //place pokemon in grid to catch 
-//boolean running = true;
-//int chance =(int) (Math.random() * 3);
-//
-//System.out.print("Push button to get a poke ball! (Press enter to continue)...");		
-//input.nextLine();
-////input.next();
-//System.out.println("You got...");
-//System.out.println(a[0].getPokeBall()[chance].toString());
-//
-//int i = 0;
-//while(i < a[0].getPokeBall()[chance].getChance()) {
-//	try {
-//		d.PrintGrid(a[0].getGrid());
-//		System.out.print("x-Cord to move/flip: ");                        
-//        int xPos = input.nextInt();
-//        System.out.print("y-Cord to move/flip: ");
-//        int yPos = input.nextInt();
-//        int flip = a[0].flip(xPos, yPos);
-//        if( flip == 0) {
-//        	System.out.println("Oops, nothing is there! :(");
-//        	i++;
-//        }else if(flip == 1) {
-//        	d.PrintGrid(a[0].getGrid());
-//        	System.out.println("Congratulations! You have caught a pokemon!");
-//        	a[0].addPoke(a[0].getGrid()[yPos-1][xPos-1]);		        	
-//        	break;
-//        }
-//	}catch(Exception e) {
-//		if( e instanceof InputMismatchException) {
-//			System.out.println("ERROR!: Please input a valid integer!");
-//			input.next();
-//		}else {
-//			System.out.println(e.getMessage());
-//			//System.out.println("ERROR!: An error occured!");
-//			//input.next();
-//		}
-//	}
-//}
-//
-//
-//}
-
-//public void SelectPoke(Account player, Account computer) {
-//
-//System.out.println("Here are your pokemons!");
-//
-//for( int i = 0; i < player.GetInventoryDisk().size(); i++) {
-//	System.out.println("Pokemon " + (i+1) + ":");
-//	d.PrintDisk(a[0].GetInventoryDisk().get(i));
-//}
-//System.out.println("Choose your pokemon to be on battle!");
-//int i = 0, j = 0;
-//while(i < 2) {
-//	try {
-//		System.out.print("Pokemon " + (i+1) + ": ");
-//		int pokeOption = input.nextInt();
-//		a[0].addOnFieldPoke(a[0].GetInventoryDisk().get(pokeOption-1));
-//		a[1].deleteInventoryP(a[0].GetInventoryDisk().get(pokeOption-1));
-//		i++;
-//	}catch(Exception e) {
-//		if(e instanceof InputMismatchException) {
-//			System.out.println("ERROR!: Please input integer for option and ID and String for pass!");
-//			input.next();
-//		}else {
-//			System.out.println("ERROR!: An error occured!");
-//		}
-//	}
-//}
-//
-//while(j < 2) {
-//	int randPoke =(int) (Math.random() * a[1].GetInventoryDisk().size());
-//	a[1].addOnFieldPoke(a[1].GetInventoryDisk().get(randPoke));
-//	j++;
-//}
-//
-//
-////a[1].addOnFieldPoke(a[1].GetInventoryDisk().get(0));
-////a[1].addOnFieldPoke(a[1].GetInventoryDisk().get(1));
-//
-//
-//}
