@@ -156,7 +156,7 @@ public class PokeGame {
 				while(j>=0) {
 					if(j<enemyPlayer.GetOnFieldDisk().size()){
 						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
-							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminaed!");
+							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminated!");
 							enemyPlayer.deleteOnFieldP(j);
 							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
 						}else {
@@ -183,7 +183,7 @@ public class PokeGame {
 				while(j>=0) {
 					if(j<enemyPlayer.GetOnFieldDisk().size()){
 						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
-							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminaed!");
+							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminated!");
 							enemyPlayer.addDeadPoke(enemyPlayer.GetOnFieldDisk().get(j));  //add into dead poke for catching later
 							enemyPlayer.deleteOnFieldP(j);								
 							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
