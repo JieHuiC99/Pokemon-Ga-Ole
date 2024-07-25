@@ -3,27 +3,60 @@ import javax.swing.*;
 import java.awt.*;
 public class PokeGame {
 	
-	ArrayList<Pokemon> Ocean = new ArrayList<Pokemon>();
-	ArrayList<Pokemon> Volcano = new ArrayList<Pokemon>();
-	ArrayList<Pokemon> Forest = new ArrayList<Pokemon>();
-	Account[] a;
-	Displayer d = new Displayer();
-	Scanner input = new Scanner(System.in);
-	Account currPlayer, enemyPlayer;
-	Database db = new Database();
-	
 	public final static int COMPUTER_MIN_ATK          = 30;
 	public final static int COMPUTER_MAX_ATK          = 50;
 	public final static int DEFAULT_HP                = 1000;
 	public final static int DEFAULT_ATK               = 200;
 	public final static int DEFAULT_DEF               = 50;
 	
+	
+	Scanner input = new Scanner(System.in);
+	private ArrayList<Pokemon> Ocean = new ArrayList<Pokemon>();
+	private ArrayList<Pokemon> Volcano = new ArrayList<Pokemon>();
+	private ArrayList<Pokemon> Forest = new ArrayList<Pokemon>();
+	private Account[] a;
+	private Displayer d = new Displayer();
+	private Account currPlayer, enemyPlayer;
+	Database db = new Database();
+	//KeySpam counter = new KeySpam();
+	
+	
+	
+	/*=============== CONSTRUCTOR ===============*/
 	public PokeGame() {
 		a = new Account[2];
 		a[0] = new Account(0); // player
 		a[1] = new Account(1); //computer		
+		int scoreImport = db.importScore();
 	}
 	
+	/*=============== PRIVATE METHOD ===============*/
+	private void attack(int atkVal, int atker) {
+		for(int i = 0; i < enemyPlayer.getOnFieldDisk().size(); i++) {
+			currPlayer.attackVal(atkVal, currPlayer.getOnFieldDisk().get(atker), enemyPlayer.getOnFieldDisk().get(i), enemyPlayer);
+			System.out.println("Enemy's total damage on " + enemyPlayer.getOnFieldDisk().get(i).getName() + 
+					": " + currPlayer.getOnFieldDisk().get(atker).getDamageDealt());
+			currPlayer.setScore(currPlayer.getScore() + currPlayer.getOnFieldDisk().get(atker).getDamageDealt());
+		}
+		System.out.println( currPlayer.getPlayerRole() + " current score: " + currPlayer.getScore());
+		int j = (enemyPlayer.getOnFieldDisk().size()) -1;
+			
+		while(j>=0) {
+			if(j<enemyPlayer.getOnFieldDisk().size()){
+				if(enemyPlayer.getOnFieldDisk().get(j).getStatus() == false) {
+					System.out.println(enemyPlayer.getOnFieldDisk().get(j).getName() + " has been eliminated!");
+					enemyPlayer.addDeadPoke(enemyPlayer.getOnFieldDisk().get(j));  //add into dead poke for catching later
+					enemyPlayer.deleteOnFieldP(j);								
+					j = (enemyPlayer.getOnFieldDisk().size()) -1;
+				}else {
+					j--;
+				}
+			}
+				
+		}
+	}
+	
+	//=========== PUBLIC METHOD ===========//	
 	   /* start the game */   
 	public void start() {
 		//loop for login          battle              continue to battle
@@ -31,7 +64,7 @@ public class PokeGame {
 
 		while (loginLoop) {  //login
 			try {
-				int loginNum = d.PrintLogin(a[0], a[1]);
+				int loginNum = d.printLogin(a[0], a[1]);
 				if( loginNum == 1 ) {
 					
 					loginLoop = false;
@@ -49,27 +82,27 @@ public class PokeGame {
 		}
 		
 		initializePokemon();
-		d.PrintCatch(a[0], a[1], d.PrintSelectLocation(a[0], a[1], Ocean, Forest, Volcano));//select location and catch 
-		d.PrintSelectPoke(a[0], a[1]);//select 2 pokemon to fight
+		d.printCatch(a[0], a[1], d.printSelectLocation(a[0], a[1], Ocean, Forest, Volcano));//select location and catch 
+		d.printSelectPoke(a[0], a[1]);//select 2 pokemon to fight
 		
 		while(gameRunning) {
 			Battle();// battle
-			winStatus = CheckWinner();
+			winStatus = checkWinner();
 			if(winStatus == true) {
 				System.out.println("You are the winner!");
 				System.out.println("Time to catch enemy's fallen pokemon!");
 				a[0].resetFlip();
-				d.PrintCatch(a[0],  a[1], a[1].GetDeadDisk());
+				d.printCatch(a[0],  a[1], a[1].getDeadDisk());
 				if(a[0].getCaughtP()!=null) {
 					a[0].resetPoke(a[0].getCaughtP());
-					d.PrintDisk(a[0].getCaughtP());
+					d.printDisk(a[0].getCaughtP());
 				}
 			}else {
 				System.out.println("You have lost!");
 				a[0].setCaughtP(null);
 			}
 			
-			d.PrintManageScores(a, a[0].getScore(), db); //manage scores 
+			d.printManageScores(a, a[0].getScore(), db); //manage scores 
 			optionLoop = true;
 			while(optionLoop) {
 				System.out.println("1. Continue to battle ");
@@ -80,9 +113,15 @@ public class PokeGame {
 					System.out.print("Your option: ");
 				int op = input.nextInt();
 					if(op == 1) {
+						for(int i = 0; i < a.length; i++) {
+							for(int j = 0; j< a[i].getInventoryDisk().size(); j++) {
+								a[i].resetPoke(a[i].getInventoryDisk().get(j));
+								a[i].resetFlip();
+							}
+						}
 						manageContinueBattle();
 						initializePokemon();
-						d.PrintSelectPoke(a[0], a[1]);//select 2 pokemon to fight
+						d.printSelectPoke(a[0], a[1]);//select 2 pokemon to fight
 						optionLoop = false;
 					}else if(op == 2) {
 						System.out.println("Thank you for playing!");
@@ -114,14 +153,14 @@ public class PokeGame {
 			setCurrPlayer(a[0], a[1]);
 		}
 		
-		while(IsBattle(currPlayer,enemyPlayer)) {
+		while(isBattle(currPlayer,enemyPlayer)) {
 			System.out.println("Your pokemon: ");
-			for( int k = 0; k < a[0].GetOnFieldDisk().size(); k++) {
-				d.PrintDisk(a[0].GetOnFieldDisk().get(k));
+			for( int k = 0; k < a[0].getOnFieldDisk().size(); k++) {
+				d.printDisk(a[0].getOnFieldDisk().get(k));
 			}
 			System.out.println("Your opponent(s) pokemon: ");
-			for( int k = 0; k < a[1].GetOnFieldDisk().size(); k++) {
-				d.PrintDisk(a[1].GetOnFieldDisk().get(k));
+			for( int k = 0; k < a[1].getOnFieldDisk().size(); k++) {
+				d.printDisk(a[1].getOnFieldDisk().get(k));
 			}
 			
 			if(this.currPlayer == a[0]) {  //player
@@ -131,7 +170,7 @@ public class PokeGame {
 					try {
 						System.out.print("Select Pokemon to attack [1 or 2]: ");
 						pokeOp = input.nextInt();
-						currPlayer.GetOnFieldP(pokeOp-1);
+						currPlayer.getOnFieldP(pokeOp-1);
 						atkLoop = false;
 					}catch(Exception e) {
 						System.out.println("ERROR!: " + e.getMessage());
@@ -148,64 +187,64 @@ public class PokeGame {
 				input.nextLine();
 				input.nextLine();
 				System.out.println("Your input damage: " + counter.getKeyVal());
-
-				for(int i = 0; i < enemyPlayer.GetOnFieldDisk().size(); i++ ) {
-					currPlayer.attackVal(counter.getKeyVal(), currPlayer.GetOnFieldDisk().get(pokeOp-1), enemyPlayer.GetOnFieldDisk().get(i), enemyPlayer);
-					System.out.println("Your total damage on " + enemyPlayer.GetOnFieldDisk().get(i).getName() + 
-							": " + currPlayer.GetOnFieldDisk().get(pokeOp-1).getDamageDealt());
-					currPlayer.setScore(currPlayer.getScore() + currPlayer.GetOnFieldDisk().get(pokeOp-1).getDamageDealt());
-				}
-				System.out.println("Your current score: " + currPlayer.getScore());
-				int j = (enemyPlayer.GetOnFieldDisk().size()) -1;
-					
-				while(j>=0) {
-					if(j<enemyPlayer.GetOnFieldDisk().size()){
-						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
-							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminated!");
-							enemyPlayer.deleteOnFieldP(j);
-							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
-						}else {
-							j--;
-						}
-					}
-				}
+				attack(counter.getKeyVal(), pokeOp-1 );
+//				for(int i = 0; i < enemyPlayer.GetOnFieldDisk().size(); i++ ) {
+//					currPlayer.attackVal(counter.getKeyVal(), currPlayer.GetOnFieldDisk().get(pokeOp-1), enemyPlayer.GetOnFieldDisk().get(i), enemyPlayer);
+//					System.out.println("Your total damage on " + enemyPlayer.GetOnFieldDisk().get(i).getName() + 
+//							": " + currPlayer.GetOnFieldDisk().get(pokeOp-1).getDamageDealt());
+//					currPlayer.setScore(currPlayer.getScore() + currPlayer.GetOnFieldDisk().get(pokeOp-1).getDamageDealt());
+//				}
+//				System.out.println("Your current score: " + currPlayer.getScore());
+//				int j = (enemyPlayer.GetOnFieldDisk().size()) -1;
+//					
+//				while(j>=0) {
+//					if(j<enemyPlayer.GetOnFieldDisk().size()){
+//						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
+//							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminated!");
+//							enemyPlayer.deleteOnFieldP(j);
+//							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
+//						}else {
+//							j--;
+//						}
+//					}
+//				}
 				
 			}else if(this.currPlayer == a[1]) {  //computer 
-
 				System.out.println("Enemy's turn to attack: ");
-				int enemyAtker = (int)(Math.random() * currPlayer.GetOnFieldDisk().size());
+				int enemyAtker = (int)(Math.random() * currPlayer.getOnFieldDisk().size());
 				int enemyAtkVal = (int)(Math.random() * ((COMPUTER_MAX_ATK - COMPUTER_MIN_ATK) + 1) + COMPUTER_MIN_ATK);
 				System.out.println("Enemy's input damage: " + enemyAtkVal);
-				for(int i = 0; i < enemyPlayer.GetOnFieldDisk().size(); i++) {
-					currPlayer.attackVal(enemyAtkVal, currPlayer.GetOnFieldDisk().get(enemyAtker), enemyPlayer.GetOnFieldDisk().get(i), enemyPlayer);
-					System.out.println("Enemy's total damage on " + enemyPlayer.GetOnFieldDisk().get(i).getName() + 
-							": " + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
-					currPlayer.setScore(currPlayer.getScore() + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
-				}
-				System.out.println("Enemy current score: " + currPlayer.getScore());
-				int j = (enemyPlayer.GetOnFieldDisk().size()) -1;
-					
-				while(j>=0) {
-					if(j<enemyPlayer.GetOnFieldDisk().size()){
-						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
-							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminated!");
-							enemyPlayer.addDeadPoke(enemyPlayer.GetOnFieldDisk().get(j));  //add into dead poke for catching later
-							enemyPlayer.deleteOnFieldP(j);								
-							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
-						}else {
-							j--;
-						}
-					}
-						
-				}
+				attack(enemyAtkVal, enemyAtker );
+//				for(int i = 0; i < enemyPlayer.GetOnFieldDisk().size(); i++) {
+//					currPlayer.attackVal(enemyAtkVal, currPlayer.GetOnFieldDisk().get(enemyAtker), enemyPlayer.GetOnFieldDisk().get(i), enemyPlayer);
+//					System.out.println("Enemy's total damage on " + enemyPlayer.GetOnFieldDisk().get(i).getName() + 
+//							": " + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
+//					currPlayer.setScore(currPlayer.getScore() + currPlayer.GetOnFieldDisk().get(enemyAtker).getDamageDealt());
+//				}
+//				System.out.println("Enemy current score: " + currPlayer.getScore());
+//				int j = (enemyPlayer.GetOnFieldDisk().size()) -1;
+//					
+//				while(j>=0) {
+//					if(j<enemyPlayer.GetOnFieldDisk().size()){
+//						if(enemyPlayer.GetOnFieldDisk().get(j).getStatus() == false) {
+//							System.out.println(enemyPlayer.GetOnFieldDisk().get(j).getName() + " has been eliminated!");
+//							enemyPlayer.addDeadPoke(enemyPlayer.GetOnFieldDisk().get(j));  //add into dead poke for catching later
+//							enemyPlayer.deleteOnFieldP(j);								
+//							j = (enemyPlayer.GetOnFieldDisk().size()) -1;
+//						}else {
+//							j--;
+//						}
+//					}
+//						
+//				}
 			}
-			SwitchPlayer();
+			switchPlayer();
 		}
 		
 	}
 	
-
-	
+	   /* initialize the pokemon and put them into separate locations
+	    * water element goes to Ocean, fire goes to Volcano and electric goes to Forest  */ 
 	public void initializePokemon() {
 		
 		Pokemon squirtle = new WaterPokemon("Squirtle","WATER",PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
@@ -233,12 +272,10 @@ public class PokeGame {
 		a[1].addPoke(Forest);
 	}
 	
-	   /* chosen pokemon attack all enemy pokemon 
-	    * If they do, update the arraylist and txt file 
-	    * @param p1 - attacker pokemon
-	    * @param p2 - enemy's player  */ 
+	   /* if player chose to continue battle, reset all player's inventory 
+	    * re-add default pokemon into their inventory (pikachu and charmander)   */ 
 	public void manageContinueBattle() {
-		System.out.println(a[0].GetInventoryDisk().size());
+		System.out.println(a[0].getInventoryDisk().size());
 		for(int i = 0; i < a.length; i++) {
 			a[i].reset();
 		}
@@ -255,8 +292,8 @@ public class PokeGame {
 	    * If they do, update the arraylist and txt file 
 	    * @param p1 - attacker pokemon
 	    * @param p2 - enemy's player  */   
-	public void Attack(Pokemon p1, Account p2) {
-		ArrayList<Pokemon> inventory = p2.GetInventoryDisk();
+	public void attack(Pokemon p1, Account p2) {
+		ArrayList<Pokemon> inventory = p2.getInventoryDisk();
 		for( int i = 0; i < inventory.size(); i++) {
 			p1.attackVal(100,inventory.get(i));
 		}
@@ -264,15 +301,15 @@ public class PokeGame {
 	
 	   /* Displayer all player's pokemon in their inventory
 	    * @param a           - the account */   
-	public void DisplayAllPlayerDisk(Account a) {
-		ArrayList<Pokemon> inventory = a.GetInventoryDisk();
+	public void displayAllPlayerDisk(Account a) {
+		ArrayList<Pokemon> inventory = a.getInventoryDisk();
 		for( int i = 0; i < inventory.size(); i++) {
-			d.PrintDisk(inventory.get(i));
+			d.printDisk(inventory.get(i));
 		}
 	}
 	
-	
-	public void SwitchPlayer() {
+	   /* switch player's turn */ 
+	public void switchPlayer() {
 		if(this.currPlayer == a[0]) {
 			this.currPlayer = a[1];
 			this.enemyPlayer = a[0];
@@ -282,24 +319,37 @@ public class PokeGame {
 		}
 	}
 	
+	   /* get the current player
+	    * @return   - current player  */ 
 	public Account getCurrPlayer() {
 		return this.currPlayer;
 	}
 	
+	   /* set current player and enemy player 
+	    * @param currPlayer  - current player
+	    * @param enemyPlayer - enemy player  */ 
 	public void setCurrPlayer(Account currPlayer, Account enemyPlayer) {
 		this.currPlayer = currPlayer;
 		this.enemyPlayer = enemyPlayer;
 	}
 	
-	public boolean IsBattle(Account currPlayer, Account enemyPlayer) {
-		if(currPlayer.GetOnFieldDisk().size() == 0 || enemyPlayer.GetOnFieldDisk().size() == 0) {
+	   /* check if the battle is ongoing   
+	    * @param currPlayer  - current player
+	    * @param enemyPlayer - enemy player
+	    * @return            - true if battle is ongoing (no winner yet)
+	    *                    - false if there is a winner  */ 
+	public boolean isBattle(Account currPlayer, Account enemyPlayer) {
+		if(currPlayer.getOnFieldDisk().size() == 0 || enemyPlayer.getOnFieldDisk().size() == 0) {
 			return false;
 		}
 		return true;
 	}
 	
-	public boolean CheckWinner() {
-		if( a[1].GetOnFieldDisk().size() == 0) {
+	   /* check who is the winner
+	    * @return   - true if winner is the player
+	    *           - false if the winner is the computer/enemey  */ 
+	public boolean checkWinner() {
+		if( a[1].getOnFieldDisk().size() == 0) {
 			return true;
 		}
 		return false;
