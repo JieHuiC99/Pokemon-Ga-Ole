@@ -39,6 +39,9 @@ public class Pokemon {
 	}
 	public void setHp(int hp) {
 		this.hp = hp;
+		if(this.hp > 0) {
+			setStatus(true);
+		}
 	}
 
 	public int getBaseAtk() {
