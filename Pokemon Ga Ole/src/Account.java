@@ -14,9 +14,9 @@ public class Account {
 	private ArrayList<Pokemon> pInventory;
 	private ArrayList<Pokemon> pOnField;
 	private ArrayList<Pokemon> pDead;
+	private Pokemon caughtP;
 	private int score;
 	PokeBall[] Pokeball;
-	
 	Pokemon[][] grid;
 	
 	public Account(int num) {
@@ -24,11 +24,12 @@ public class Account {
 		if(num == 0) {
 			this.playerRole = "PLAYER";
 		}else if( num == 1) {
-			this.playerRole = "COMPUTER";
+			this.playerRole = "ENEMY";
 		}
 		
 		pInventory = new ArrayList<Pokemon>();
 		pOnField = new ArrayList<Pokemon>();
+		pDead = new ArrayList<Pokemon>();
 		grid = new Pokemon[3][3];
 		Pokeball = new PokeBall[3];
 		Pokeball[0] = new PokePoke(2, "Poke Ball");
@@ -89,16 +90,34 @@ public class Account {
 		return false;
 	}
 	
-	//add methods==================================================================
-	public void addPoke( Pokemon poke ) {
-		this.pInventory.add(poke);
+	public void reset() {
+		this.score = 0;
+		pInventory.clear();
+		pOnField.clear();
+		pDead.clear();
 	}
 	
-	//overloading
-	public void addPoke(Pokemon[] poke) {
-		for(int i = 0; i < poke.length; i++) {
-			this.pInventory.add(poke[i]);
+	public void resetFlip() {
+		for(int i = 0; i < grid.length; i++) {
+			for(int j = 0; j< grid.length; j++) {
+				if(grid[i][j] != null) {
+					grid[i][j].setIsFlipped(false);
+				}
+			}
 		}
+	}
+	
+	public void resetPoke(Pokemon p) {
+		p.setHp(PokeGame.DEFAULT_HP);
+	}
+	
+	//add and set methods==================================================================
+	public void setCaughtP(Pokemon p) {
+		this.caughtP = p;
+	}
+	
+	public void addPoke( Pokemon poke ) {
+		this.pInventory.add(poke);
 	}
 	
 	//overloading
@@ -116,7 +135,15 @@ public class Account {
 		this.pDead.add(poke);
 	}
 	
+	public void setPlayerRole(String p) {
+		this.playerRole = p;
+	}
+	
 	//get methods =====================================================================================
+	public Pokemon getCaughtP() {
+		return this.caughtP;
+	}
+	
 	public PokeBall[] getPokeBall() {
 		return this.Pokeball;
 	}
@@ -137,6 +164,10 @@ public class Account {
 		return this.pDead;
 	}
 	
+	public String getPlayerRole() {
+		return this.playerRole;
+	}
+	
 	//delete methods===================================================================================
 	public void deleteOnFieldP( int index ) {
 		this.pOnField.remove(index);
@@ -147,19 +178,8 @@ public class Account {
 	}
 	
 	public void attackVal(int keyVal, Pokemon atkP, Pokemon enemyP, Account enemy) {
-		atkP.attackVal(keyVal, enemyP);
-		
-//		for( int i = enemy.GetOnFieldDisk().size()-1; i >= 0; i--) {
-//			enemy.GetOnFieldDisk().get(i).checkStatus();
-//			if( enemy.GetOnFieldDisk().get(i).getStatus() == false) {
-//				enemy.deleteOnFieldP(enemy.GetOnFieldDisk().get(i));
-//			}
-//		}
-		
+		atkP.attackVal(keyVal, enemyP);		
 		enemyP.checkStatus();
-//		if(enemyP.getStatus() == false) {
-//			enemy.deleteOnFieldP(enemyP);
-//		}
 	}
 	
 }
