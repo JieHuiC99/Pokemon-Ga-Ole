@@ -76,17 +76,22 @@ public class PokeGame {
 				System.out.println("2. Exit");
 				System.out.println("NOTE: If you continue and you won you will continue with catched fallen pokemon, otherwise default pokemons!");
 				System.out.println("      Previous catched pokemon will be removed!");
-				System.out.print("Your option: ");
+				try {
+					System.out.print("Your option: ");
 				int op = input.nextInt();
-				if(op == 1) {
-					manageContinueBattle();
-					initializePokemon();
-					d.PrintSelectPoke(a[0], a[1]);//select 2 pokemon to fight
-					optionLoop = false;
-				}else if(op == 2) {
-					System.out.println("Thank you for playing!");
-					gameRunning = false;
-					optionLoop = false;
+					if(op == 1) {
+						manageContinueBattle();
+						initializePokemon();
+						d.PrintSelectPoke(a[0], a[1]);//select 2 pokemon to fight
+						optionLoop = false;
+					}else if(op == 2) {
+						System.out.println("Thank you for playing!");
+						gameRunning = false;
+						optionLoop = false;
+					}
+				}catch(Exception e) {
+					System.out.println("ERROR! INPUT 1 OR 2!");
+					input.next();
 				}
 			}
 			
