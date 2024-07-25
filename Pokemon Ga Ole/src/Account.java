@@ -6,10 +6,8 @@ public class Account {
 	private String pass;
 	private final static int accountPlayerID = 0001;
 	private final static String accountPass = "p";
-	
 	//computer or player 
 	private String playerRole;
-	
 	//player's items 
 	private ArrayList<Pokemon> pInventory;
 	private ArrayList<Pokemon> pOnField;
@@ -20,13 +18,11 @@ public class Account {
 	Pokemon[][] grid;
 	
 	public Account(int num) {
-		
 		if(num == 0) {
 			this.playerRole = "PLAYER";
 		}else if( num == 1) {
 			this.playerRole = "ENEMY";
 		}
-		
 		pInventory = new ArrayList<Pokemon>();
 		pOnField = new ArrayList<Pokemon>();
 		pDead = new ArrayList<Pokemon>();
@@ -50,6 +46,25 @@ public class Account {
 		return this.score;
 	}
 	
+	public void setCaughtP(Pokemon p) {
+		this.caughtP = p;
+	}
+	
+	public Pokemon getCaughtP() {
+		return this.caughtP;
+	}
+	
+	public void setPlayerRole(String p) {
+		this.playerRole = p;
+	}
+	
+	public String getPlayerRole() {
+		return this.playerRole;
+	}
+	
+    /* place an arraylist of (fallen)pokemons into the 2D array
+	 * randomize their positions in the 2D array
+	 * @param fallenPokemon - the fallen pokemons to placed in grid and catched by players  */   
 	public void placePokeInGrid(ArrayList<Pokemon> fallenPokemon) {
 		int randomRow, randomCol;
 		for( int i = 0; i < fallenPokemon.size(); i++ ) {
@@ -60,7 +75,12 @@ public class Account {
 				grid[randomRow][randomCol] = fallenPokemon.get(i);
 		}
 	}
-	
+
+	/* flip a grid to see if there is a pokemon inside the grid 
+	 * @param xPos - x position (horizontal)
+	 * @param yPos - y position (vertical)
+	 * @return     - 0 if null
+	 *             - 1 if pokemon is found */   
 	public int flip(int xPos, int yPos) {
 		if ( (xPos >= 1 && xPos <= 3) && (yPos >= 1 && yPos <= 3) ) {
 			if (grid[yPos-1][xPos-1] == null) {                                                    // If the desired flipping block is empty
@@ -83,13 +103,19 @@ public class Account {
 		}
 	}
 	
-	public boolean IsLoginValid(int playerID, String pass) {
+	/* check if login is valid 
+     * @param playerID - player's id
+     * @param pass     - password
+     * @return         - true if login is valid
+     *                 - false if login is invalid  */   
+	public boolean isLoginValid(int playerID, String pass) {
 		if( playerID == accountPlayerID && pass.equals(accountPass)) {
 			return true;
 		}
 		return false;
 	}
 	
+	/* clear player's inventory and reset the score to 0  */   
 	public void reset() {
 		this.score = 0;
 		pInventory.clear();
@@ -97,23 +123,22 @@ public class Account {
 		pDead.clear();
 	}
 	
+	/* reset the grid by making it empty  */   
 	public void resetFlip() {
 		for(int i = 0; i < grid.length; i++) {
 			for(int j = 0; j< grid.length; j++) {
 				if(grid[i][j] != null) {
 					grid[i][j].setIsFlipped(false);
+					grid[i][j] = null;
 				}
 			}
 		}
 	}
 	
+	/* reset pokemon hp back to default value
+     * @param p  - pokemon object  */   
 	public void resetPoke(Pokemon p) {
 		p.setHp(PokeGame.DEFAULT_HP);
-	}
-	
-	//add and set methods==================================================================
-	public void setCaughtP(Pokemon p) {
-		this.caughtP = p;
 	}
 	
 	public void addPoke( Pokemon poke ) {
@@ -135,40 +160,26 @@ public class Account {
 		this.pDead.add(poke);
 	}
 	
-	public void setPlayerRole(String p) {
-		this.playerRole = p;
-	}
-	
-	//get methods =====================================================================================
-	public Pokemon getCaughtP() {
-		return this.caughtP;
-	}
-	
 	public PokeBall[] getPokeBall() {
 		return this.Pokeball;
 	}
 	
-	public Pokemon GetOnFieldP(int index) {
+	public Pokemon getOnFieldP(int index) {
 		return this.pOnField.get(index);
 	}
 	
-	public ArrayList<Pokemon> GetInventoryDisk() {
+	public ArrayList<Pokemon> getInventoryDisk() {
 		return this.pInventory;
 	}
 	
-	public ArrayList<Pokemon> GetOnFieldDisk(){
+	public ArrayList<Pokemon> getOnFieldDisk(){
 		return this.pOnField;
 	}
 	
-	public ArrayList<Pokemon> GetDeadDisk(){
+	public ArrayList<Pokemon> getDeadDisk(){
 		return this.pDead;
 	}
 	
-	public String getPlayerRole() {
-		return this.playerRole;
-	}
-	
-	//delete methods===================================================================================
 	public void deleteOnFieldP( int index ) {
 		this.pOnField.remove(index);
 	}
@@ -177,6 +188,13 @@ public class Account {
 		 this.pInventory.remove(p);
 	}
 	
+	/* attack the pokemon
+	    * check enemy pokemon status see if they are alive or dead
+	    * if dead, remove them from on field  
+	    * @param keyVal - the amount of times player spammed the key (GUI)
+	    * @param atkP   - currentPlayer's attacker pokemon
+	    * @param enemyP - enemy Pokemon object
+	    * @param enemy  - enemy player  */   
 	public void attackVal(int keyVal, Pokemon atkP, Pokemon enemyP, Account enemy) {
 		atkP.attackVal(keyVal, enemyP);		
 		enemyP.checkStatus();
