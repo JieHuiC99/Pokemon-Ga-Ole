@@ -1,45 +1,28 @@
 
 public class FirePokemon extends Pokemon {
 
-	public int damage, keyVal;
-	public static float rate; 
+//	public int damage, keyVal;
+//	public static float rate; 
 	private Pokemon enemyP;
 	
+	/*=============== CONSTRUCTOR ===============*/
 	public FirePokemon(String name, String element, int hp, int baseAtk, int baseDef) {
 		super(name, "FIRE", hp, baseAtk, baseDef);
 		}
 	
+	//=========== PUBLIC METHOD ===========//
+	   /* Get the pokemon.object
+	    * @return   - pokemon object */ 
 	public Pokemon getEnemyP() {
 		return enemyP;
 	}
 
-	//Override setEnemyP for FirePokemon
-//	public void setEnemyP(Pokemon enemyP) {
-//		super.setEnemyP(enemyP);
-//		this.enemyP = enemyP;
-//		updateRate();
-//	}
-	
-	
-	//Element effectiveness
-	private void updateRate() {
-		if(enemyP instanceof ElectricPokemon) {
-			rate = SUPER_EFFECTIVE;
-	}
-		else if(enemyP instanceof FirePokemon) {
-			rate = NOT_VERY_EFFECTIVE;
-	}
-		else {
-			rate = NORMAL;
-	}}
-	
-	//Calculate attack damage
-//	public int getDamage(int keyVal, float rate) {
-//		int atkDmg;
-//		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - getEnemyP().getBaseDef());
-//		return atkDmg;
-//	}
-	
+	/* chosen pokemon attack all enemy pokemon 
+     * update and return the calculated damage 
+     * @param keyVal      - the number of times player spammed the key (GUI feature)
+     * @param rate        - damage multiplier based on attacker and defender types
+     * @param enemyP      - enemy pokemon object
+     * @return            - calculated damage */   
 	public int getDamage(int keyVal, float rate, Pokemon enemyP) {
 		int atkDmg;
 		atkDmg = (int)(((keyVal + getBaseAtk()) * rate) - enemyP.getBaseDef());
