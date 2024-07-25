@@ -5,8 +5,7 @@ public class PokeBall {
     
     private String type;
     private int chance;
-    private int numOfChance;
-
+    
     public PokeBall(int chance, String type) {
         this.chance = chance;
         this.type = type;
