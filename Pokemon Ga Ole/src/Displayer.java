@@ -168,7 +168,7 @@ public class Displayer {
 		//boolean running = true;
 		int chance =(int) (Math.random() * 3);
 		
-		System.out.print("Push button to get a poke ball! (Press enter to continue)...");		
+		System.out.print("Randomizing a Poke Ball... (Press enter to continue if game doesnt continue)...");		
 		input.nextLine();
 		//input.next();
 		System.out.println("You got...");
