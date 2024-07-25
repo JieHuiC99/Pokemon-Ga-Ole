@@ -13,17 +13,32 @@ public class Database {
 	private static String fileName = "Scores.txt";  //filename
 	
 	/* INSTANCE VARIABLES */
-	private ArrayList<String> allScores; /* Arraylist that stores the top 5 scores */
+	private ArrayList<Integer> allScores; /* Arraylist that stores the top 5 scores */
 	
 	/*=============== CONSTRUCTOR ===============*/
 	public Database() {
-		allScores =  new ArrayList<String>();
+		allScores =  new ArrayList<>();
+	}
+	
+	/*=============== PRIVATE METHOD ===============*/
+	/* Rewrites the file with the current top 5 scores */
+	private void rewriteFile() {
+		try (BufferedWriter bWriter = new BufferedWriter(new FileWriter(fileName, false))) {
+			for (int i = 0; i < allScores.size(); i++) {
+				bWriter.write(String.valueOf(allScores.get(i)));
+				if (i < allScores.size() - 1) {
+					bWriter.newLine();
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("General I/O Exception: " + e.getMessage());
+		}
 	}
 	
 	//=========== PUBLIC METHOD ===========//
 	   /* Import scores into the database from a textfile.
 	    * @return   - The number of scores imported (for debugging purpose incase import wrong number of scores) */ 
-	public int ImportScore() {
+	public int importScore() {
 		int scoresImported = 0;
 		//String fileName = "Scores.txt";  //filename
 		try {
@@ -36,7 +51,7 @@ public class Database {
 	        	while(sc.hasNextLine()) {
 					infoStr = sc.nextLine();
 					if( !infoStr.equals("")) { 
-						allScores.add(infoStr);
+						allScores.add(Integer.parseInt(infoStr));
 						scoresImported++;
 					}
 				}
@@ -58,68 +73,36 @@ public class Database {
 	    * @return            - Returns the index(ranking is index + 1) of the player's score in the arraylist
 	    *                      if they made it into the top 5
 	    *                    - Returns player's score if they did not make it into the top 5. */   
-	public int CheckAndSetScores( int playerScore ) {
-		String pScore = String.valueOf(playerScore);
-		allScores.add(pScore);
-		int scoreIndex = -1;
+	public int checkAndSetScores(int playerScore) {
+		allScores.add(playerScore);
+		Collections.sort(allScores, Collections.reverseOrder());  //sort arraylist in descending order 
 		
-		//convert string arraylist to int 
-		ArrayList<Integer> Scores = new ArrayList<Integer>();
-		for( int i = 0; i < allScores.size(); i++) {
-			Scores.add(Integer.parseInt(allScores.get(i)));
+		if (allScores.size() > 5) {
+			allScores = new ArrayList<>(allScores.subList(0, 5));  // keep only the top 5 scores
 		}
 		
-		Collections.sort(Scores,Collections.reverseOrder());  //sort arraylist in descending order 
-		
-		//make arraylist size back to 5 
-		while(Scores.size() > 5) {
-			Scores.remove(Scores.size()-1);
-		}
-		allScores.clear();//clear arrayist b4 adding back 
-		for( int i = 0; i < Scores.size(); i++) {
-			allScores.add(String.valueOf(Scores.get(i)));
+		// Check if player made it to top 5
+		int scoreIndex = allScores.indexOf(playerScore);
+		if (scoreIndex >= 0) {
+			rewriteFile();
+		} else {
+			scoreIndex = playerScore; // if not in top 5, return the player's score
 		}
 		
-		//check if player make it to top 5
-		if(Scores.get(Scores.size()-1) > playerScore) {
-			scoreIndex = playerScore;
-		}else {
-			for( int i = 0; i < Scores.size(); i++) {
-				if(Scores.get(i) == playerScore) {
-					scoreIndex = i;
-				}
-			}
-		}
-		
-		//rewrite the file
-		try {
-			FileWriter myWriter = new FileWriter(fileName);
-			BufferedWriter bWriter = new BufferedWriter(myWriter);
-			for( int i = 0; i < allScores.size(); i++ ) {
-				bWriter.write(allScores.get(i));
-				if( i < allScores.size() - 1) {
-					bWriter.newLine();
-				}				
-			}
-			bWriter.close();
-		}catch(IOException e) {
-			System.out.println("General I/O Exception: " + e.getMessage());
-		}
-		
-		return scoreIndex;  
+		return scoreIndex;
 	}
-	
+		
 	   /* Get the top 5 scores 
 	    * @return   - Returns the arraylist that stores 
 	    *             all the scores. */
-	public ArrayList<String> GetAllScores(){
+	public ArrayList<Integer> getAllScores(){
 		return this.allScores;
 	}
 	
 	   /* FOR TESTING PURPOSES */
 	   /* Displays the (top 5) scores
 	    * on the screen. */
-	public void DisplayAllScores() {
+	public void displayAllScores() {
 		for(int i = 0; i < allScores.size(); i++ ) {
 			System.out.println((i+1) + ". " + allScores.get(i));
 		}
@@ -129,7 +112,7 @@ public class Database {
 	   /* Check if file exist
 	    * @return   - Returns true if file is found
 	    *           - Returns false if file not found  */
-	public boolean FileExist() {
+	public boolean fileExist() {
 		File file = new File("Scores.txt");
 		if(file.exists() == true) {
 			return true;
