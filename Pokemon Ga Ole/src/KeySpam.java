@@ -1,4 +1,11 @@
 import javax.swing.*;
+import java.awt.Robot;
+import javax.swing.Timer;
+import javax.swing.JLabel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.InputEvent;
+import java.awt.AWTException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,7 +25,7 @@ public class KeySpam extends JFrame implements KeyListener {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        label = new JLabel("Press 'Q' to start counting...", SwingConstants.CENTER);
+        label = new JLabel("Press 'SPACE' to start counting...", SwingConstants.CENTER);
         add(label);
 
         addKeyListener(this);
@@ -40,7 +47,7 @@ public class KeySpam extends JFrame implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_Q) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
         	if (!counting) {
                 keyVal = 0;
                 timeLeft = 5;
@@ -51,6 +58,7 @@ public class KeySpam extends JFrame implements KeyListener {
             keyVal++;
         }
     }
+    
 
 	public void setKeyVal(int keyVal) {
 		this.keyVal = keyVal;
