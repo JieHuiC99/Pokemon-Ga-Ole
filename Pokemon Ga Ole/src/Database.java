@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.BufferedWriter;
@@ -22,7 +23,7 @@ public class Database {
 	//=========== PUBLIC METHOD ===========//
 	   /* Import scores into the database from a textfile.
 	    * @return   - The number of scores imported (for debugging purpose incase import wrong number of scores) */ 
-	public int ImportAcct() {
+	public int ImportScore() {
 		int scoresImported = 0;
 		//String fileName = "Scores.txt";  //filename
 		try {
@@ -42,7 +43,11 @@ public class Database {
 	        }
 			sc.close();
 		}catch (IOException e) {
-			System.out.println("General I/O Exception: " + e.getMessage());
+			if(e instanceof FileNotFoundException) {
+				//create a new file and print nothing
+			}else {
+				System.out.println("General I/O Exception: " + e.getMessage());
+			}
 		}
 		return scoresImported;
 	}
@@ -76,7 +81,7 @@ public class Database {
 		}
 		
 		//check if player make it to top 5
-		if(Scores.get(4) > playerScore) {
+		if(Scores.get(Scores.size()-1) > playerScore) {
 			scoreIndex = playerScore;
 		}else {
 			for( int i = 0; i < Scores.size(); i++) {
