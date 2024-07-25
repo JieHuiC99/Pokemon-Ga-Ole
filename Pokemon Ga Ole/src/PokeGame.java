@@ -1,6 +1,4 @@
 import java.util.*;
-import javax.swing.*;
-import java.awt.*;
 public class PokeGame {
 	
 	public final static int COMPUTER_MIN_ATK          = 30;
@@ -34,7 +32,7 @@ public class PokeGame {
 	private void attack(int atkVal, int atker) {
 		for(int i = 0; i < enemyPlayer.getOnFieldDisk().size(); i++) {
 			currPlayer.attackVal(atkVal, currPlayer.getOnFieldDisk().get(atker), enemyPlayer.getOnFieldDisk().get(i), enemyPlayer);
-			System.out.println("Enemy's total damage on " + enemyPlayer.getOnFieldDisk().get(i).getName() + 
+			System.out.println(currPlayer.getPlayerRole() + "'s total damage on " + enemyPlayer.getOnFieldDisk().get(i).getName() + 
 					": " + currPlayer.getOnFieldDisk().get(atker).getDamageDealt());
 			currPlayer.setScore(currPlayer.getScore() + currPlayer.getOnFieldDisk().get(atker).getDamageDealt());
 		}
@@ -90,7 +88,7 @@ public class PokeGame {
 			winStatus = checkWinner();
 			if(winStatus == true) {
 				System.out.println("You are the winner!");
-				System.out.println("Time to catch enemy's fallen pokemon!");
+				System.out.println("Time to catch enemy's fallen Pokemon!");
 				a[0].resetFlip();
 				d.printCatch(a[0],  a[1], a[1].getDeadDisk());
 				if(a[0].getCaughtP()!=null) {
@@ -107,8 +105,8 @@ public class PokeGame {
 			while(optionLoop) {
 				System.out.println("1. Continue to battle ");
 				System.out.println("2. Exit");
-				System.out.println("NOTE: If you continue and you won you will continue with catched fallen pokemon, otherwise default pokemons!");
-				System.out.println("      Previous catched pokemon will be removed!");
+				System.out.println("NOTE: If you continue after winning this round, you will continue with the fallen Pokemon caught, otherwise default Pokemons!");
+				System.out.println("      Previously caught Pokemon will be removed!");
 				try {
 					System.out.print("Your option: ");
 				int op = input.nextInt();
@@ -154,11 +152,11 @@ public class PokeGame {
 		}
 		
 		while(isBattle(currPlayer,enemyPlayer)) {
-			System.out.println("Your pokemon: ");
+			System.out.println("Your Pokemon: ");
 			for( int k = 0; k < a[0].getOnFieldDisk().size(); k++) {
 				d.printDisk(a[0].getOnFieldDisk().get(k));
 			}
-			System.out.println("Your opponent(s) pokemon: ");
+			System.out.println("Your opponent's Pokemon(s): ");
 			for( int k = 0; k < a[1].getOnFieldDisk().size(); k++) {
 				d.printDisk(a[1].getOnFieldDisk().get(k));
 			}
@@ -174,7 +172,7 @@ public class PokeGame {
 						atkLoop = false;
 					}catch(Exception e) {
 						System.out.println("ERROR!: " + e.getMessage());
-						System.out.println("NOTE: If game doesnt continue key in anything and press enter!");
+						System.out.println("NOTE: If game doesn't continue key in anything and press enter!");
 						input.next();
 					}
 				}
