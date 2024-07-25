@@ -36,16 +36,7 @@ public class Displayer {
 					}else {
 						System.out.print("| ! ");
 					}
-				}
-//				if( grid[i][k].getIsFlipped() == false) {
-//					System.out.print("|{?}");
-//				}else {
-//					if( grid[i][k] == null ) {
-//						System.out.print("| x ");
-//					}else {
-//						System.out.print("| ★ ");
-//					}
-//				}				
+				}			
 			} //★
 			System.out.print("|" + "\n"); 
 			
@@ -77,8 +68,8 @@ public class Displayer {
 	}
 	
 	public int PrintLogin(Account player, Account computer) {
-		Pokemon charmander = new FirePokemon("Charmander", "Fire", 1000,200,50);
-		Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", 1000,200,50);
+		Pokemon charmander = new FirePokemon("Charmander", "Fire", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
+		Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
 		while (true) {
             try {
                 System.out.println("1. Login");
@@ -121,36 +112,10 @@ public class Displayer {
 	}
 	
 	
-	
-	
 	public ArrayList<Pokemon> PrintSelectLocation(Account player, Account computer, 
 			ArrayList<Pokemon> Ocean, ArrayList<Pokemon> Forest, ArrayList<Pokemon> Volcano){
 
 		ArrayList<Pokemon> pReturn = new ArrayList<Pokemon>();
-		
-		Pokemon squirtle = new WaterPokemon("Squirtle","WATER",1000,200,50);
-		Pokemon piplup = new WaterPokemon("Piplup","WATER",1000,200,50);
-		Pokemon psyduck = new WaterPokemon("Psyduck","WATER",1000,200,50);
-		Ocean.add(squirtle);
-		Ocean.add(piplup);
-		Ocean.add(psyduck);
-		computer.addPoke(Ocean);
-		
-		Pokemon ninetales = new FirePokemon("Charmander","FIRE",1000,200,50);
-		Pokemon vulpix = new FirePokemon("Vulpix", "FIRE", 1000,200,50);
-		Pokemon ponyta = new FirePokemon("Ponyta", "FIRE", 1000,200,50); 
-		Volcano.add(ninetales);
-		Volcano.add(vulpix);
-		Volcano.add(ponyta);
-		computer.addPoke(Volcano);
-		
-		Pokemon jolteon = new ElectricPokemon("Jolteon","ELECTRIC",1000,200,50);
-		Pokemon voltorb = new ElectricPokemon("Voltorb","ELECTRIC",1000,200,50);
-		Pokemon magnemite = new ElectricPokemon("Magnemite","ELECTRIC",1000,200,50);
-		Forest.add(jolteon);
-		Forest.add(voltorb);
-		Forest.add(magnemite);
-		computer.addPoke(Forest);
 		
 		boolean locationLoop = true;
 		while(locationLoop) {
@@ -171,14 +136,14 @@ public class Displayer {
 					break;
 					
 				case 2:
-					System.out.println("Volcano - Charmander, Vulpix, Ponyta");
+					System.out.println("Volcano - Ninetales, Vulpix, Ponyta");
 					pReturn = Volcano;
 					pokemonGUI("Volcano", Volcano);
 					locationLoop = false;
 					break;
 					
 				case 3:
-					System.out.println("Forest - Pikachu, Voltorb, Magnemite");
+					System.out.println("Forest - Jolteon, Voltorb, Magnemite");
 					pReturn = Forest;
 					pokemonGUI("Forest", Forest);
 					locationLoop = false;
@@ -198,7 +163,7 @@ public class Displayer {
 
 	
 	public void PrintCatch(Account player, Account computer, ArrayList<Pokemon> fallenPokemon) {
-
+		player.setCaughtP(null);
 		player.placePokeInGrid(fallenPokemon);  //place pokemon in grid to catch 
 		//boolean running = true;
 		int chance =(int) (Math.random() * 3);
@@ -224,7 +189,9 @@ public class Displayer {
 		        }else if(flip == 1) {
 		        	PrintGrid(player.getGrid());
 		        	System.out.println("Congratulations! You have caught a pokemon!");
-		        	player.addPoke(player.getGrid()[yPos-1][xPos-1]);		        	
+		        	player.addPoke(player.getGrid()[yPos-1][xPos-1]);	
+		        	//caughtP = player.getGrid()[yPos-1][xPos-1];
+		        	player.setCaughtP(player.getGrid()[yPos-1][xPos-1]);
 		        	break;
 		        }
 			}catch(Exception e) {
@@ -267,7 +234,11 @@ public class Displayer {
 				}
 				if(!same) {
 					player.addOnFieldPoke(player.GetInventoryDisk().get(pokeOption-1));
-					computer.deleteInventoryP(computer.GetInventoryDisk().get(pokeOption-1));
+					for( int k = 0; k < computer.GetInventoryDisk().size(); k++) {
+						if(player.GetInventoryDisk().get(pokeOption-1) == computer.GetInventoryDisk().get(k)) {
+							computer.deleteInventoryP(computer.GetInventoryDisk().get(k));
+						}
+					}
 					i++;
 				}
 				
@@ -296,12 +267,30 @@ public class Displayer {
 				j++;
 			}
 		}
-		
-		
-//		a[1].addOnFieldPoke(a[1].GetInventoryDisk().get(0));
-//		a[1].addOnFieldPoke(a[1].GetInventoryDisk().get(1));
-		
-		
+	}
+	
+	public void PrintManageScores(Account[] players, int score, Database db) {
+		int scoreImport = db.ImportScore();
+		//System.out.println("Scores imported: " + scoreImport);
+		int rank = db.CheckAndSetScores(score);
+		ArrayList<String> allScores = db.GetAllScores();
+		for(int i = 0; i < players.length; i++) {
+			System.out.println(players[i].getPlayerRole() + "'s score: " + players[i].getScore());
+		}
+		System.out.println("================");
+		System.out.println("| TOP 5 SCORES |");
+		System.out.println("================");
+		for(int i = 0; i < allScores.size(); i++) {
+			System.out.printf("| %d. %-8s  |\n",i+1,allScores.get(i));
+		}
+		System.out.println("----------------");
+		if(rank == score) {
+			System.out.println("You did not made it into the top 5, better luck next time!");
+		}else {
+			if(rank <= 4 && rank >= 0) {
+				System.out.println("Congratulations! You have made it into the top " + (rank+1) + "!");
+			}
+		}
 	}
 	
 	// GUI for Pokemon
