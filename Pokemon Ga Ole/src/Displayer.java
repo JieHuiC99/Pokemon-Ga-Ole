@@ -13,7 +13,7 @@ public class Displayer {
 		
 	}
 	
-	public void PrintGrid(Pokemon[][] grid) {
+	public void printGrid(Pokemon[][] grid) {
 		
 		System.out.println("===============");
 		System.out.println("|   Catch!!   |");
@@ -46,7 +46,7 @@ public class Displayer {
 		
 	}
 	
-	public void PrintDisk(Pokemon p) {
+	public void printDisk(Pokemon p) {
 		String currStatus = null;
 		p.checkStatus();
 		if(p.getStatus() == true) {
@@ -67,7 +67,7 @@ public class Displayer {
 		
 	}
 	
-	public int PrintLogin(Account player, Account computer) {
+	public int printLogin(Account player, Account computer) {
 		Pokemon charmander = new FirePokemon("Charmander", "Fire", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
 		Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
 		while (true) {
@@ -85,13 +85,13 @@ public class Displayer {
                         System.out.print("Enter Password: ");
                         String password = input.nextLine();
                         
-                        if (player.IsLoginValid(playerID, password)) {  
+                        if (player.isLoginValid(playerID, password)) {  
                         	player.addPoke(charmander);
         					player.addPoke(pikachu);
                             System.out.println("Successfully Logged In!");
-                            System.out.printf("You have %d default Pokemon in your inventory:\n", player.GetInventoryDisk().size());
-                            for (Pokemon pokemon : player.GetInventoryDisk()) {
-                                PrintDisk(pokemon);
+                            System.out.printf("You have %d default Pokemon in your inventory:\n", player.getInventoryDisk().size());
+                            for (Pokemon pokemon : player.getInventoryDisk()) {
+                                printDisk(pokemon);
                             }
                             return 1;                            
                         } else {  // login invalid
@@ -112,7 +112,7 @@ public class Displayer {
 	}
 	
 	
-	public ArrayList<Pokemon> PrintSelectLocation(Account player, Account computer, 
+	public ArrayList<Pokemon> printSelectLocation(Account player, Account computer, 
 			ArrayList<Pokemon> Ocean, ArrayList<Pokemon> Forest, ArrayList<Pokemon> Volcano){
 
 		ArrayList<Pokemon> pReturn = new ArrayList<Pokemon>();
@@ -149,6 +149,7 @@ public class Displayer {
 					locationLoop = false;
 					break;
 				default:
+					System.out.println("ERROR!: Chose 1-3!");
 					break;
 				}
 			}catch(Exception e) {
@@ -162,7 +163,7 @@ public class Displayer {
 	}
 
 	
-	public void PrintCatch(Account player, Account computer, ArrayList<Pokemon> fallenPokemon) {
+	public void printCatch(Account player, Account computer, ArrayList<Pokemon> fallenPokemon) {
 		player.setCaughtP(null);
 		player.placePokeInGrid(fallenPokemon);  //place pokemon in grid to catch 
 		//boolean running = true;
@@ -177,7 +178,7 @@ public class Displayer {
 		int i = 0;
 		while(i < player.getPokeBall()[chance].getChance()) {
 			try {
-				PrintGrid(player.getGrid());
+				printGrid(player.getGrid());
 				System.out.print("x-Cord to move/flip: ");                        
 		        int xPos = input.nextInt();
 		        System.out.print("y-Cord to move/flip: ");
@@ -187,7 +188,7 @@ public class Displayer {
 		        	System.out.println("Oops, nothing is there! :(");
 		        	i++;
 		        }else if(flip == 1) {
-		        	PrintGrid(player.getGrid());
+		        	printGrid(player.getGrid());
 		        	System.out.println("Congratulations! You have caught a pokemon!");
 		        	player.addPoke(player.getGrid()[yPos-1][xPos-1]);	
 		        	//caughtP = player.getGrid()[yPos-1][xPos-1];
@@ -209,13 +210,13 @@ public class Displayer {
 		
 	}
 	
-	public void PrintSelectPoke(Account player, Account computer) {
+	public void printSelectPoke(Account player, Account computer) {
 		
 		System.out.println("Here are your pokemons!");
 		
-		for( int i = 0; i < player.GetInventoryDisk().size(); i++) {
+		for( int i = 0; i < player.getInventoryDisk().size(); i++) {
 			System.out.println("Pokemon " + (i+1) + ":");
-			PrintDisk(player.GetInventoryDisk().get(i));
+			printDisk(player.getInventoryDisk().get(i));
 		}
 		System.out.println("Choose your pokemon to be on battle!");
 		int i = 0, j = 0;
@@ -224,19 +225,19 @@ public class Displayer {
 			try {
 				System.out.print("Pokemon " + (i+1) + ": ");
 				int pokeOption = input.nextInt();
-				for(int x = 0; x < player.GetOnFieldDisk().size(); x++) {
-					if(player.GetOnFieldDisk().size() != 0) {
-						if( player.GetInventoryDisk().get(pokeOption-1) == player.GetOnFieldDisk().get(x)) {
+				for(int x = 0; x < player.getOnFieldDisk().size(); x++) {
+					if(player.getOnFieldDisk().size() != 0) {
+						if( player.getInventoryDisk().get(pokeOption-1) == player.getOnFieldDisk().get(x)) {
 							System.out.println("ERROR!: Pokemon is alredy in inventory!");
 							same = true;
 						}
 					}
 				}
 				if(!same) {
-					player.addOnFieldPoke(player.GetInventoryDisk().get(pokeOption-1));
-					for( int k = 0; k < computer.GetInventoryDisk().size(); k++) {
-						if(player.GetInventoryDisk().get(pokeOption-1) == computer.GetInventoryDisk().get(k)) {
-							computer.deleteInventoryP(computer.GetInventoryDisk().get(k));
+					player.addOnFieldPoke(player.getInventoryDisk().get(pokeOption-1));
+					for( int k = 0; k < computer.getInventoryDisk().size(); k++) {
+						if(player.getInventoryDisk().get(pokeOption-1) == computer.getInventoryDisk().get(k)) {
+							computer.deleteInventoryP(computer.getInventoryDisk().get(k));
 						}
 					}
 					i++;
@@ -254,26 +255,26 @@ public class Displayer {
 		
 		while(j < 2) {
 			boolean same = false;
-			int randPoke =(int) (Math.random() * computer.GetInventoryDisk().size());
-			for(int y = 0; y < computer.GetOnFieldDisk().size(); y++) {
-				if(computer.GetOnFieldDisk().size() != 0) {
-					if( computer.GetInventoryDisk().get(randPoke) == computer.GetOnFieldDisk().get(y)) {
+			int randPoke =(int) (Math.random() * computer.getInventoryDisk().size());
+			for(int y = 0; y < computer.getOnFieldDisk().size(); y++) {
+				if(computer.getOnFieldDisk().size() != 0) {
+					if( computer.getInventoryDisk().get(randPoke) == computer.getOnFieldDisk().get(y)) {
 						same = true;
 					}
 				}
 			}
 			if(!same) {
-				computer.addOnFieldPoke(computer.GetInventoryDisk().get(randPoke));
+				computer.addOnFieldPoke(computer.getInventoryDisk().get(randPoke));
 				j++;
 			}
 		}
 	}
 	
-	public void PrintManageScores(Account[] players, int score, Database db) {
-		int scoreImport = db.ImportScore();
+	public void printManageScores(Account[] players, int score, Database db) {
+		
 		//System.out.println("Scores imported: " + scoreImport);
-		int rank = db.CheckAndSetScores(score);
-		ArrayList<String> allScores = db.GetAllScores();
+		int rank = db.checkAndSetScores(score);
+		ArrayList<Integer> allScores = db.getAllScores();
 		for(int i = 0; i < players.length; i++) {
 			System.out.println(players[i].getPlayerRole() + "'s score: " + players[i].getScore());
 		}
@@ -294,10 +295,6 @@ public class Displayer {
 	}
 	
 	// GUI for Pokemon
-		private void setTextPosition(JLabel label, int horizontalAlignment, int verticalAlignment) {
-		    label.setHorizontalTextPosition(horizontalAlignment);
-		    label.setVerticalTextPosition(verticalAlignment);
-		}
 		
 		public void pokemonGUI(String title, ArrayList<Pokemon> pokemons)	{
 			JFrame frame = new JFrame("Pokemon - " + title);
@@ -317,6 +314,11 @@ public class Displayer {
 	        
 	        frame.setVisible(true);
 	        frame.setAlwaysOnTop(true);
+		}
+		
+		private void setTextPosition(JLabel label, int horizontalAlignment, int verticalAlignment) {
+		    label.setHorizontalTextPosition(horizontalAlignment);
+		    label.setVerticalTextPosition(verticalAlignment);
 		}
 	
 	
