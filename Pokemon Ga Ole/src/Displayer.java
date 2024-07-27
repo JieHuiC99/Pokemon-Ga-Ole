@@ -1,3 +1,4 @@
+
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.util.*;
@@ -8,6 +9,7 @@ import javax.swing.JLabel;
 public class Displayer {
 	
 	Scanner input = new Scanner(System.in);
+	private String currentPlayerID;
 	
 	public Displayer() {
 		
@@ -72,33 +74,51 @@ public class Displayer {
 		Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
 		while (true) {
             try {
-                System.out.println("1. Login");
-                System.out.println("2. Exit");
+                System.out.println("1. Create Account");
+                System.out.println("2. Login");
+                System.out.println("3. Exit");
                 System.out.print("Option: ");
                 int option = input.nextInt();
                 
                 switch (option) {
-                    case 1: // login
+                
+                	case 1: // create account
+                	System.out.print("Enter new PlayerID: ");
+                	String newPlayerID = input.nextLine();
+                	input.nextLine();
+                	System.out.print("Enter new Password: ");
+                	String newPass = input.nextLine();
+                	
+                	if(Account.createAcc(newPlayerID, newPass)) {
+                		System.out.println("Account created successfully!");
+                	}
+                	else {
+                		System.out.println("Failed to create account. PlayerID already exists.");
+                	}
+                	break;
+                	
+                    case 2: // login
                         System.out.print("Enter PlayerID: ");
-                        int playerID = input.nextInt();
+                        String playerID = input.nextLine();
                         input.nextLine(); // Consume the newline character
                         System.out.print("Enter Password: ");
                         String password = input.nextLine();
                         
-                        if (player.isLoginValid(playerID, password)) {  
+                        if (player.isLoginValid(playerID, password)) {
+                            currentPlayerID = playerID;
                         	player.addPoke(charmander);
-        					player.addPoke(pikachu);
+                            player.addPoke(pikachu);
                             System.out.println("Successfully Logged In!");
                             System.out.printf("You have %d default Pokemon in your inventory:\n", player.getInventoryDisk().size());
                             for (Pokemon pokemon : player.getInventoryDisk()) {
                                 printDisk(pokemon);
                             }
-                            return 1;                            
-                        } else {  // login invalid
+                            return 1;
+                        } else {  // Login invalid
                             System.out.println("Your ID or Password is invalid!");
                             return -1;
                         }
-                    case 2: // Exit
+                    case 3: // Exit
                         System.out.println("Exiting the game...");
                         return 0;
                     default:
@@ -273,16 +293,22 @@ public class Displayer {
 	public void printManageScores(Account[] players, int score, Database db) {
 		
 		//System.out.println("Scores imported: " + scoreImport);
-		int rank = db.checkAndSetScores(score);
-		ArrayList<Integer> allScores = db.getAllScores();
-		for(int i = 0; i < players.length; i++) {
-			System.out.println(players[i].getPlayerRole() + "'s score: " + players[i].getScore());
+		int rank = db.checkAndSetScores(currentPlayerID, score);
+		ArrayList<String> allScores = db.getAllScores();
+		
+		for(Account player : players) {
+			String role = player.getPlayerRole().equals("PLAYER") ? "Player": "Enemy";
+			System.out.println(role + "'s score " + player.getScore());
 		}
+		
 		System.out.println("================");
 		System.out.println("| TOP 5 SCORES |");
 		System.out.println("================");
 		for(int i = 0; i < allScores.size(); i++) {
-			System.out.printf("| %d. %-8s  |\n",i+1,allScores.get(i));
+			String[] parts = allScores.get(i).split(",");
+			String currentPlayerID = parts[0];
+			int playerScore = Integer.parseInt(parts[1]);
+			System.out.printf("| %d. %-10s %-8s  |\n",i+1,currentPlayerID, playerScore);
 		}
 		System.out.println("----------------");
 		if(rank == score) {

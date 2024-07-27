@@ -1,12 +1,13 @@
 import java.util.ArrayList;
+
 public class Account {
 	
 	//Login details
-	private int playerID;
+	private String playerID;
 	private String pass;
 	private final static int accountPlayerID = 0001;
 	private final static String accountPass = "p";
-	//computer or player 
+	//computer or player
 	private String playerRole;
 	//player's items 
 	private ArrayList<Pokemon> pInventory;
@@ -17,12 +18,15 @@ public class Account {
 	PokeBall[] Pokeball;
 	Pokemon[][] grid;
 	
-	public Account(int num) {
-		if(num == 0) {
-			this.playerRole = "PLAYER";
-		}else if( num == 1) {
-			this.playerRole = "ENEMY";
-		}
+	public Account(String playerID, String pass, boolean isUser) {
+		this.playerID = playerID;
+		this.pass = pass;
+		this.playerRole = isUser ? "PLAYER" : "ENEMY";
+//		if(num == 0) {
+//			this.playerRole = "PLAYER";
+//		}else if( num == 1) {
+//			this.playerRole = "ENEMY";
+//		}
 		pInventory = new ArrayList<Pokemon>();
 		pOnField = new ArrayList<Pokemon>();
 		pDead = new ArrayList<Pokemon>();
@@ -43,7 +47,7 @@ public class Account {
 	}
 	
 	public int getScore() {
-		return this.score;
+		return score;
 	}
 	
 	public void setCaughtP(Pokemon p) {
@@ -60,6 +64,58 @@ public class Account {
 	
 	public String getPlayerRole() {
 		return this.playerRole;
+	}
+
+
+	
+	
+	
+	
+	
+	public static boolean createAcc(String playerID, String pass) {
+		for(Account acc : Database.getAccounts()) {
+			if(acc.playerID.equals(playerID)) {
+				return false;
+			}
+		}
+		Account newAccount = new Account(playerID, pass, true);
+		Database.getAccounts().add(newAccount);
+		return Database.saveAccounts();
+	}
+	
+	public String getPlayerID() {
+		return this.playerID;
+	}
+	
+	public String getPass() {
+		return pass;
+	}
+	
+	
+	
+		
+	
+	
+	/* check if login is valid 
+     * @param playerID - player's id
+     * @param pass     - password
+     * @return         - true if login is valid
+     *                 - false if login is invalid  */   
+	public boolean isLoginValid(String playerID, String pass) {
+		for (Account acc : Database.getAccounts()) {
+			if( acc.getPlayerID().equals(playerID) && acc.getPass().equals(pass)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/* clear player's inventory and reset the score to 0  */   
+	public void reset() {
+		this.score = 0;
+		pInventory.clear();
+		pOnField.clear();
+		pDead.clear();
 	}
 	
     /* place an arraylist of (fallen)pokemons into the 2D array
@@ -101,26 +157,6 @@ public class Account {
 		}else {
 			throw new IllegalArgumentException("ERROR!: Input is out of bound!");	
 		}
-	}
-	
-	/* check if login is valid 
-     * @param playerID - player's id
-     * @param pass     - password
-     * @return         - true if login is valid
-     *                 - false if login is invalid  */   
-	public boolean isLoginValid(int playerID, String pass) {
-		if( playerID == accountPlayerID && pass.equals(accountPass)) {
-			return true;
-		}
-		return false;
-	}
-	
-	/* clear player's inventory and reset the score to 0  */   
-	public void reset() {
-		this.score = 0;
-		pInventory.clear();
-		pOnField.clear();
-		pDead.clear();
 	}
 	
 	/* reset the grid by making it empty  */   
