@@ -82,7 +82,7 @@ public class PokeGame {
 		d.printSelectPoke(a[0], a[1]);//select 2 pokemon to fight
 		
 		while(gameRunning) {
-			Battle();// battle
+			battle();// battle
 			winStatus = checkWinner();
 			if(winStatus == true) {
 				System.out.println("You are the winner!");
@@ -141,7 +141,7 @@ public class PokeGame {
 	    * Randomize to decide if player or computer start first
 	    * When player's turn, gui will pop up for player to spam a key
 	    * When computer's turn, computer will randomize a   */   
-	public void Battle() {
+	public void battle() {
 		int flip = (int)(Math.random() * 2)+1;
 		if(flip == 1) {
 			setCurrPlayer(a[1], a[0]);
@@ -229,7 +229,6 @@ public class PokeGame {
 	   /* if player chose to continue battle, reset all player's inventory 
 	    * re-add default pokemon into their inventory (pikachu and charmander)   */ 
 	public void manageContinueBattle() {
-		System.out.println(a[0].getInventoryDisk().size());
 		for(int i = 0; i < a.length; i++) {
 			a[i].reset();
 		}

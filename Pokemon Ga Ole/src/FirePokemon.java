@@ -1,9 +1,6 @@
 
-
 public class FirePokemon extends Pokemon {
 
-//	public int damage, keyVal;
-//	public static float rate; 
 	private Pokemon enemyP;
 	
 	/*=============== CONSTRUCTOR ===============*/

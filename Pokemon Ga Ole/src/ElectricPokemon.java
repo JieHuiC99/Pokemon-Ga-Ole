@@ -1,9 +1,6 @@
 
-
 public class ElectricPokemon extends Pokemon {
 
-//	private int damage, keyVal;
-//	private static float rate; 
 	private Pokemon enemyP;
 	
 	/*=============== CONSTRUCTOR ===============*/

@@ -1,9 +1,5 @@
-
-
 public class WaterPokemon extends Pokemon {
 
-//	private int keyVal;
-//	private static float rate; 
 	private Pokemon enemyP;
 	
 	/*=============== CONSTRUCTOR ===============*/
