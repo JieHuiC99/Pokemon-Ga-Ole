@@ -1,4 +1,5 @@
 
+
 public class WaterPokemon extends Pokemon {
 
 //	private int keyVal;
@@ -17,6 +18,10 @@ public class WaterPokemon extends Pokemon {
 		return enemyP;
 	}
 	
+	public void setEnemyP(Pokemon enemyP) {
+		this.enemyP = enemyP;
+	}
+
 	/* chosen pokemon attack all enemy pokemon 
      * update and return the calculated damage 
      * @param keyVal      - the number of times player spammed the key (GUI feature)
