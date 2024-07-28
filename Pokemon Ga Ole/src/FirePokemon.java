@@ -1,4 +1,5 @@
 
+
 public class FirePokemon extends Pokemon {
 
 //	public int damage, keyVal;
@@ -15,6 +16,10 @@ public class FirePokemon extends Pokemon {
 	    * @return   - pokemon object */ 
 	public Pokemon getEnemyP() {
 		return enemyP;
+	}
+
+	public void setEnemyP(Pokemon enemyP) {
+		this.enemyP = enemyP;
 	}
 
 	/* chosen pokemon attack all enemy pokemon 
