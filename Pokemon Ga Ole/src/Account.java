@@ -19,7 +19,7 @@ public class Account implements Serializable {
     private Pokemon[][] grid;
     
   public Account(String playerID, String pass, boolean isUser) {
-    this.playerID = playerID;
+	this.playerID = playerID;
     this.pass = pass;
     this.playerRole = isUser ? "PLAYER" : "ENEMY";
     pInventory = new ArrayList<>();
@@ -31,44 +31,50 @@ public class Account implements Serializable {
     Pokeball[1] = new PokeGreat(4, "Great Ball");
     Pokeball[2] = new PokeUltra(6, "Ultra Ball");
     score = 0;
-
-   
-}
+  }
     
     public Pokemon[][] getGrid() {
         return this.grid;
     }
     
-    public void setScore(int score) {
-        this.score = score;
-    }
-    
+    public void setGrid(Pokemon[][] grid) {
+		this.grid = grid;
+	}
+
     public int getScore() {
         return score;
     }
-    
-    public void setCaughtP(Pokemon p) {
-        this.caughtP = p;
+	
+    public void setScore(int score) {
+        this.score = score;
     }
     
     public Pokemon getCaughtP() {
         return this.caughtP;
     }
     
+    public void setCaughtP(Pokemon p) {
+        this.caughtP = p;
+    }
+
+    public String getPlayerRole() {
+        return this.playerRole;
+    }   
+    
     public void setPlayerRole(String p) {
         this.playerRole = p;
     }
-    
-    public String getPlayerRole() {
-        return this.playerRole;
-    }
-    
+   
    public static boolean createAcc(String playerID, String pass) {
     if (playerID == null || playerID.trim().isEmpty()) {
         System.out.println("ERROR: PlayerID cannot be empty.");
         return false;
     }
-
+    
+    if(playerID.length() > 10) {
+    	throw new IllegalArgumentException("PlayerID length cannot exit 10 characters!");
+    }
+    
     // Check if account already exists
     for (Account acc : Database.getAccounts()) {
         if (acc.getPlayerID().equals(playerID)) {
@@ -92,11 +98,19 @@ public class Account implements Serializable {
         return playerID;
     }
     
-    public String getPass() {
+    public void setPlayerID(String playerID) {
+		this.playerID = playerID;
+	}
+
+	public String getPass() {
         return pass;
     }
     
-    /* check if login is valid 
+    public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	/* check if login is valid 
      * @param playerID - player's id
      * @param pass     - password
      * @return         - true if login is valid
@@ -189,15 +203,19 @@ public class Account implements Serializable {
         this.pDead.add(poke);
     }
     
-    public PokeBall[] getPokeBall() {
+    public PokeBall[] getPokeball() {
         return this.Pokeball;
     }
-    
-    public Pokemon getOnFieldP(int index) {
+
+	public void setPokeball(PokeBall[] Pokeball) {
+		this.Pokeball = Pokeball;
+	}
+
+	public Pokemon getOnFieldP(int index) {
         return this.pOnField.get(index);
     }
-    
-    public ArrayList<Pokemon> getInventoryDisk() {
+  
+	public ArrayList<Pokemon> getInventoryDisk() {
         return this.pInventory;
     }
     
