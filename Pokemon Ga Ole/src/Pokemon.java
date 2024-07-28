@@ -1,4 +1,5 @@
 
+
 public class Pokemon {
 	//Attributes
 	public final static float SUPER_EFFECTIVE = 2f;
@@ -64,7 +65,11 @@ public class Pokemon {
 
 	public String getElement() {
 		return element;
-	}	
+	}
+	
+	public void setElement(String element) {
+		this.element = element;
+	}
 
 	public boolean getStatus() {
 		return status;
