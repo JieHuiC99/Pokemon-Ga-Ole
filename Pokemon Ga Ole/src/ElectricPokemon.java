@@ -1,4 +1,5 @@
 
+
 public class ElectricPokemon extends Pokemon {
 
 //	private int damage, keyVal;
@@ -15,8 +16,12 @@ public class ElectricPokemon extends Pokemon {
 	    * @return   - pokemon object */ 
 	public Pokemon getEnemyP() {
 		return enemyP;
-	}	
+	}
 	
+	public void setEnemyP(Pokemon enemyP) {
+		this.enemyP = enemyP;
+	}
+
 	/* chosen pokemon attack all enemy pokemon 
 	    * update and return the calculated damage 
 	    * @param keyVal      - the number of times player spammed the key (GUI feature)
