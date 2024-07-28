@@ -94,28 +94,6 @@ public class Database {
         }
     }
 
-    public static ArrayList<Account> getAccounts() {
-        return accounts;
-    }
-
-    public static void addAccount(Account account) {
-        accounts.add(account);
-        saveAccounts();
-    }
-
-    public static boolean saveAccounts() {
-        try (BufferedWriter bWriter = new BufferedWriter(new FileWriter(accountFile, false))) {
-            for (Account acc : Database.getAccounts()) {
-                bWriter.write(acc.getPlayerID() + "," + acc.getPass());
-                bWriter.newLine();
-            }
-            return true;
-        } catch (IOException e) {
-            System.out.println("General I/O Exception: " + e.getMessage());
-            return false;
-        }
-    }
-
     private void rewriteFile() {
         ArrayList<String> existingScores = new ArrayList<>();
         File file = new File(scoreFile);
@@ -153,6 +131,29 @@ public class Database {
             }
         } catch (IOException e) {
             System.out.println("General I/O Exception while writing scores: " + e.getMessage());
+        }
+    }
+    
+    /*=============== PUBLIC METHODS ===============*/
+    public static ArrayList<Account> getAccounts() {
+        return accounts;
+    }
+
+    public static void addAccount(Account account) {
+        accounts.add(account);
+        saveAccounts();
+    }
+
+    public static boolean saveAccounts() {
+        try (BufferedWriter bWriter = new BufferedWriter(new FileWriter(accountFile, false))) {
+            for (Account acc : Database.getAccounts()) {
+                bWriter.write(acc.getPlayerID() + "," + acc.getPass());
+                bWriter.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("General I/O Exception: " + e.getMessage());
+            return false;
         }
     }
 
