@@ -23,9 +23,9 @@ public class PokeGame {
 	/*=============== CONSTRUCTOR ===============*/
 	public PokeGame() {
 		a = new Account[2];
-		a[0] = new Account(0); // player
-		a[1] = new Account(1); //computer		
-		int scoreImport = db.importScore();
+		a[0] = new Account("", "", true); // player
+		a[1] = new Account("comp", "compPass", false); //computer		
+//		db.importScores();
 	}
 	
 	/*=============== PRIVATE METHOD ===============*/

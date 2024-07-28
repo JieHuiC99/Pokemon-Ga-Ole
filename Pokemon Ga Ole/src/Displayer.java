@@ -1,3 +1,4 @@
+
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.util.*;
@@ -8,6 +9,7 @@ import javax.swing.JLabel;
 public class Displayer {
 	
 	Scanner input = new Scanner(System.in);
+	private String currentPlayerID;
 	
 	public Displayer() {
 		
@@ -47,6 +49,10 @@ public class Displayer {
 	}
 	
 	public void printDisk(Pokemon p) {
+		if(p == null) {
+			System.out.println("No Pokemon data available");
+			return;
+		}
 		String currStatus = null;
 		p.checkStatus();
 		if(p.getStatus() == true) {
@@ -68,48 +74,87 @@ public class Displayer {
 	}
 	
 	public int printLogin(Account player, Account computer) {
-		Pokemon charmander = new FirePokemon("Charmander", "Fire", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
-		Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", PokeGame.DEFAULT_HP,PokeGame.DEFAULT_ATK,PokeGame.DEFAULT_DEF);
-		while (true) {
-            try {
-                System.out.println("1. Login");
-                System.out.println("2. Exit");
-                System.out.print("Option: ");
-                int option = input.nextInt();
-                
-                switch (option) {
-                    case 1: // login
-                        System.out.print("Enter PlayerID: ");
-                        int playerID = input.nextInt();
-                        input.nextLine(); // Consume the newline character
-                        System.out.print("Enter Password: ");
-                        String password = input.nextLine();
-                        
-                        if (player.isLoginValid(playerID, password)) {  
-                        	player.addPoke(charmander);
-        					player.addPoke(pikachu);
-                            System.out.println("Successfully Logged In!");
-                            System.out.printf("You have %d default Pokemon in your inventory:\n", player.getInventoryDisk().size());
-                            for (Pokemon pokemon : player.getInventoryDisk()) {
-                                printDisk(pokemon);
-                            }
-                            return 1;                            
-                        } else {  // login invalid
-                            System.out.println("Your ID or Password is invalid!");
-                            return -1;
+    Pokemon charmander = new FirePokemon("Charmander", "Fire", PokeGame.DEFAULT_HP, PokeGame.DEFAULT_ATK, PokeGame.DEFAULT_DEF);
+    Pokemon pikachu = new ElectricPokemon("Pikachu", "Electric", PokeGame.DEFAULT_HP, PokeGame.DEFAULT_ATK, PokeGame.DEFAULT_DEF);
+
+    while (true) {
+        try {
+            System.out.println("1. Create Account");
+            System.out.println("2. Login");
+            System.out.println("3. Exit");
+            System.out.print("Option: ");
+            int option = input.nextInt();
+            input.nextLine(); // Consume the newline character
+
+            switch (option) {
+                case 1: // Create Account
+                    System.out.print("Enter new PlayerID: ");
+                    String newPlayerID = input.nextLine().trim();
+                    if (newPlayerID.isEmpty()) {
+                        System.out.println("ERROR: PlayerID cannot be empty.");
+                        break;
+                    }
+                    System.out.print("Enter new Password: ");
+                    String newPass = input.nextLine().trim();
+                    if (newPass.isEmpty()) {
+                        System.out.println("ERROR: Password cannot be empty.");
+                        break;
+                    }
+
+                    // Debugging output
+                    System.out.println("Creating account with PlayerID: " + newPlayerID);
+                    
+                    if (Account.createAcc(newPlayerID, newPass)) {
+                        System.out.println("Account created successfully!");
+                    } else {
+                        System.out.println("Failed to create account. PlayerID already exists.");
+                    }
+                    break;
+
+                case 2: // Login
+                    System.out.print("Enter PlayerID: ");
+                    String playerID = input.nextLine().trim();
+                    if (playerID.isEmpty()) {
+                        System.out.println("ERROR: PlayerID cannot be empty.");
+                        break;
+                    }
+                    System.out.print("Enter Password: ");
+                    String password = input.nextLine().trim();
+                    if (password.isEmpty()) {
+                        System.out.println("ERROR: Password cannot be empty.");
+                        break;
+                    }
+
+                    if (player.isLoginValid(playerID, password)) {
+                        currentPlayerID = playerID;
+                        player.addPoke(charmander);
+                        player.addPoke(pikachu);
+                        System.out.println("Successfully Logged In!");
+                        System.out.printf("You have %d default Pokemon in your inventory:\n", player.getInventoryDisk().size());
+                        for (Pokemon pokemon : player.getInventoryDisk()) {
+                            printDisk(pokemon);
                         }
-                    case 2: // Exit
-                        System.out.println("Exiting the game...");
-                        return 0;
-                    default:
-                        System.out.println("Invalid option! Please select 1 or 2.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("ERROR!: Please input integer for option and ID and String for pass!");
-                input.nextLine(); // Clear the invalid input
+                        return 1;
+                    } else {  // Login invalid
+                        System.out.println("Your ID or Password is invalid!");
+                        return -1;
+                    }
+
+                case 3: // Exit
+                    System.out.println("Exiting the game...");
+                    return 0;
+
+                default:
+                    System.out.println("Invalid option! Please select 1, 2, or 3.");
             }
+        } catch (InputMismatchException e) {
+            System.out.println("ERROR!: Please input a valid integer for option.");
+            input.nextLine(); // Clear the invalid input
         }
-	}
+    }
+}
+
+
 	
 	
 	public ArrayList<Pokemon> printSelectLocation(Account player, Account computer, 
@@ -180,9 +225,9 @@ public class Displayer {
 			try {
 				printGrid(player.getGrid());
 				System.out.print("x-Cord to move/flip: ");                        
-		        int xPos = input.nextInt();
+		        int xPos = input.nextInt() - 1;
 		        System.out.print("y-Cord to move/flip: ");
-		        int yPos = input.nextInt();
+		        int yPos = input.nextInt() - 1;
 		        int flip = player.flip(xPos, yPos);
 		        if( flip == 0) {
 		        	System.out.println("Oops, nothing is there! :(");
@@ -190,24 +235,17 @@ public class Displayer {
 		        }else if(flip == 1) {
 		        	printGrid(player.getGrid());
 		        	System.out.println("Congratulations! You have caught a pokemon!");
-		        	player.addPoke(player.getGrid()[yPos-1][xPos-1]);	
-		        	//caughtP = player.getGrid()[yPos-1][xPos-1];
-		        	player.setCaughtP(player.getGrid()[yPos-1][xPos-1]);
+		        	Pokemon caught = player.getGrid()[yPos][xPos];
+		        	player.addPoke(caught);
+		        	player.setCaughtP(caught);
 		        	break;
 		        }
 			}catch(Exception e) {
-				if( e instanceof InputMismatchException) {
-					System.out.println("ERROR!: Please input a valid integer!");
-					input.next();
-				}else {
-					System.out.println(e.getMessage());
-					//System.out.println("ERROR!: An error occured!");
-					//input.next();
-				}
+				System.out.println("ERROR!: " + e.getMessage());
+				input.next();
+				
 			}
-		}
-		
-		
+		}	
 	}
 	
 	public void printSelectPoke(Account player, Account computer) {
@@ -271,28 +309,43 @@ public class Displayer {
 	}
 	
 	public void printManageScores(Account[] players, int score, Database db) {
-		
-		//System.out.println("Scores imported: " + scoreImport);
-		int rank = db.checkAndSetScores(score);
-		ArrayList<Integer> allScores = db.getAllScores();
-		for(int i = 0; i < players.length; i++) {
-			System.out.println(players[i].getPlayerRole() + "'s score: " + players[i].getScore());
-		}
-		System.out.println("================");
-		System.out.println("| TOP 5 SCORES |");
-		System.out.println("================");
-		for(int i = 0; i < allScores.size(); i++) {
-			System.out.printf("| %d. %-8s  |\n",i+1,allScores.get(i));
-		}
-		System.out.println("----------------");
-		if(rank == score) {
-			System.out.println("You did not made it into the top 5, better luck next time!");
-		}else {
-			if(rank <= 4 && rank >= 0) {
-				System.out.println("Congratulations! You have made it into the top " + (rank+1) + "!");
-			}
-		}
-	}
+    // Update the scores for the current player
+    int rank = db.checkAndSetScores(currentPlayerID, score);
+    
+    // Save updated scores without losing other account details
+    if (!db.saveAccounts()) {
+        System.out.println("Error saving accounts!");
+    }
+
+    // Retrieve and display all scores
+    ArrayList<String> allScores = db.getAllScores();
+    
+    // Print player scores
+    for (Account player : players) {
+        String role = player.getPlayerRole().equals("PLAYER") ? "Player" : "Enemy";
+        System.out.println(role + "'s score: " + player.getScore());
+    }
+    
+    // Print top 5 scores
+    System.out.println("================");
+    System.out.println("| TOP 5 SCORES |");
+    System.out.println("================");
+    for (int i = 0; i < Math.min(allScores.size(), 5); i++) {
+        String[] parts = allScores.get(i).split(",");
+        String playerID = parts[0];
+        int playerScore = Integer.parseInt(parts[1]);
+        System.out.printf("| %d. %-10s %-8d  |\n", i + 1, playerID, playerScore);
+    }
+    System.out.println("----------------");
+    if (rank == score) {
+        System.out.println("You did not make it into the top 5, better luck next time!");
+    } else {
+        if (rank <= 4 && rank >= 0) {
+            System.out.println("Congratulations! You have made it into the top " + (rank + 1) + "!");
+        }
+    }
+}
+
 	
 	// GUI for Pokemon
 		
