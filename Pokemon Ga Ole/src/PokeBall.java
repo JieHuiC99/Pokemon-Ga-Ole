@@ -15,9 +15,17 @@ public class PokeBall {
         return chance;
     }
 
-    public String getType() {
+	public void setChance(int chance) {
+		this.chance = chance;
+	}
+
+	public String getType() {
         return type;
     }
+	
+	public void setType(String type) {
+		this.type = type;
+	}
     
     public String toString() {
     	return String.format("======================\n"
