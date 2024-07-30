@@ -1,10 +1,6 @@
 import javax.swing.*;
-import java.awt.Robot;
 import javax.swing.Timer;
 import javax.swing.JLabel;
-import java.awt.event.KeyAdapter;
-import java.awt.event.InputEvent;
-import java.awt.AWTException;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
